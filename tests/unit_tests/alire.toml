@@ -1,0 +1,25 @@
+name = "unit_tests"
+description = "Unit tests for Tux"
+version = "0.1.0-dev"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+executables = ["unit_tests"]
+
+[[depends-on]]
+tux = "*"
+support = "*"
+aunit = "^22.0.0"
+gnatcov = "^22.0.1"
+
+[[pins]]
+tux = { path = "../.." }
+support = { path = "../support" }
+
+[build-profiles]
+tux = "validation"
+
+[configuration.values]
+tux.Self_Tests = "Enabled"

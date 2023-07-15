@@ -1,0 +1,20 @@
+name = "hmac"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+[[depends-on]]
+tux = "*"
+support = "*"
+gnatcov = "^22.0.1"
+
+[[pins]]
+tux = { path = "../../../.." }
+support = { path = "../../../support" }
+
+[build-profiles]
+tux = "validation"
+

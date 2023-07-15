@@ -1,0 +1,25 @@
+name = "benchmark"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+executables = ["benchmark"]
+
+[[depends-on]]
+tux = "*"
+support = "*"
+gnatcov = "^22.0.1"
+
+[[pins]]
+tux = { path = "../.." }
+support = { path = "../support" }
+
+[build-profiles]
+tux = "release"
+
+[configuration.values]
+tux.SHA512_Backend = "Speed"
+tux.SHA256_Backend = "Speed"

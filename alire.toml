@@ -1,0 +1,58 @@
+name = "tux"
+description = "Configurable crypto library for embedded systems"
+version = "0.1.0-dev"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+tags = [
+    "spark",
+    "cryptography",
+    "embedded",
+    "hkdf",
+    "hmac",
+    "nostd",
+    "security",
+    "sha1",
+    "sha2",
+    "spark"
+]
+
+[[depends-on]]
+gnat = ">=12.0.0"
+gnatprove = "12.1.1"
+
+[configuration.variables]
+SHA1_Backend   = { type = "Enum", values = ["Enabled", "Disabled"],       default = "Enabled" }
+SHA256_Backend = { type = "Enum", values = ["Speed", "Size", "Disabled"], default = "Size" }
+SHA512_Backend = { type = "Enum", values = ["Speed", "Size", "Disabled"], default = "Size" }
+Self_Tests     = { type = "Enum", values = ["Disabled", "Enabled"],       default = "Enabled" }
+
+[build-switches]
+release.runtime_checks = "None"
+release.contracts = "No"
+
+"*".style_checks = [
+    "-gnaty3"   # Specify indentation level of 3
+    ,"-gnatya"  # Check attribute casing
+    ,"-gnatyA"  # Use of array index numbers in array attributes
+    ,"-gnatyb"  # Blanks not allowed at statement end
+    ,"-gnatyc"  # Check comments
+    ,"-gnaty-d" # Disable check no DOS line terminators present
+    ,"-gnatye"  # Check end/exit labels
+    ,"-gnatyf"  # No form feeds or vertical tabs
+    ,"-gnatyh"  # No horizontal tabs
+    ,"-gnatyi"  # Check if-then layout
+    ,"-gnatyI"  # check mode IN keywords
+    ,"-gnatyk"  # Check keyword casing
+    ,"-gnatyl"  # Check layout
+    ,"-gnatym"  # Check maximum line length
+    ,"-gnatyn"  # Check casing of entities in Standard
+    ,"-gnatyO"  # Check that overriding subprograms are explicitly marked as such
+    ,"-gnatyp"  # Check pragma casing
+    ,"-gnatyr"  # Check identifier references casing
+    ,"-gnatyS"  # Check no statements after THEN/ELSE
+    ,"-gnatyt"  # Check token spacing
+    ,"-gnatyu"  # Check unnecessary blank lines
+    ,"-gnatyx"  # Check extra parentheses
+]

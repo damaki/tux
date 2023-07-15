@@ -1,0 +1,27 @@
+with "config/benchmark_config.gpr";
+with "../../tux.gpr";
+project Benchmark is
+
+   for Source_Dirs use ("src/", "src/x86-64/", "config/");
+   for Object_Dir use "obj/" & Benchmark_Config.Build_Profile;
+   for Create_Missing_Dirs use "True";
+   for Exec_Dir use "bin";
+   for Main use ("benchmark.adb");
+
+   package Compiler is
+      for Default_Switches ("Ada") use Benchmark_Config.Ada_Compiler_Switches;
+   end Compiler;
+
+   package Binder is
+      for Switches ("Ada") use ("-Es"); --  Symbolic traceback
+   end Binder;
+
+   package Linker is
+      for Switches ("Ada") use ("-Wl,-Map=map.txt"); --  Symbolic traceback
+   end Linker;
+
+   package Install is
+      for Artifacts (".") use ("share");
+   end Install;
+
+end Benchmark;

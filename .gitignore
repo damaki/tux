@@ -1,0 +1,11 @@
+/obj/
+/lib/
+/alire/
+/config/
+__pycache__
+.pytest_cache
+
+# Ignore GNATcoverage intermediate files
+*.srctrace
+gnatcov_out/
+srctrace_files.txt

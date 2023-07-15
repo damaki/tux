@@ -1,0 +1,13 @@
+name = "support"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+[[depends-on]]
+tux = "*"
+
+[[pins]]
+tux = { path = "../.." }

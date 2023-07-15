@@ -1,0 +1,105 @@
+with "config/tux_config.gpr";
+project Tux is
+
+   for Library_Name use "tux";
+   for Library_Version use Project'Library_Name & ".so." & Tux_Config.Crate_Version;
+
+   --  Configure SHA-1 source directories based on the selected implementation
+
+   SHA1_Dirs := ();
+   SHA1_Self_Test_Dirs := ();
+   case Tux_Config.SHA1_Backend is
+      when "Enabled" =>
+         SHA1_Dirs           := ("src/spark/sha1/enabled");
+         SHA1_Self_Test_Dirs := ("src/spark/sha1/self_test/");
+      when "Disabled" =>
+         SHA1_Dirs           := ("src/spark/sha1/disabled");
+   end case;
+
+   --  Configure SHA-256 source directories based on the selected implementation
+
+   SHA256_Dirs := ();
+   SHA256_Self_Test_Dirs := ();
+   case Tux_Config.SHA256_Backend is
+      when "Speed" =>
+         SHA256_Dirs           := ("src/spark/sha256/enabled",
+                                   "src/spark/sha256/speed/");
+         SHA256_Self_Test_Dirs := ("src/spark/sha256/self_test/");
+      when "Size"  =>
+         SHA256_Dirs           := ("src/spark/sha256/enabled",
+                                   "src/spark/sha256/size/");
+         SHA256_Self_Test_Dirs := ("src/spark/sha256/self_test/");
+      when "Disabled" =>
+         SHA256_Dirs           := ("src/spark/sha256/disabled");
+   end case;
+
+   --  Configure SHA-512 source directories based on the selected implementation
+
+   SHA512_Dirs := ();
+   SHA512_Self_Test_Dirs := ();
+   case Tux_Config.SHA512_Backend is
+      when "Speed" =>
+         SHA512_Dirs           := ("src/spark/sha512/enabled",
+                                   "src/spark/sha512/speed/");
+         SHA512_Self_Test_Dirs := ("src/spark/sha512/self_test/");
+      when "Size"  =>
+         SHA512_Dirs           := ("src/spark/sha512/enabled",
+                                   "src/spark/sha512/size/");
+         SHA512_Self_Test_Dirs := ("src/spark/sha512/self_test/");
+      when "Disabled" =>
+         SHA512_Dirs           := ("src/spark/sha512/disabled");
+   end case;
+
+   --  Add self test directories when enabled
+
+   Self_Test_Dirs := ();
+   case Tux_Config.Self_Tests is
+      when "Enabled" =>
+         Self_Test_Dirs := SHA1_Self_Test_Dirs &
+                           SHA256_Self_Test_Dirs &
+                           SHA512_Self_Test_Dirs;
+      when others => null;
+   end case;
+
+   for Source_Dirs use ("src/spark/", "config/") &
+                       SHA1_Dirs &
+                       SHA256_Dirs &
+                       SHA512_Dirs &
+                       Self_Test_Dirs;
+   for Object_Dir use "obj/" & Tux_Config.Build_Profile;
+   for Create_Missing_Dirs use "True";
+   for Library_Dir use "lib";
+
+   type Library_Type_Type is ("relocatable", "static", "static-pic");
+   Library_Type : Library_Type_Type :=
+     external ("Tux_LIBRARY_TYPE", external ("LIBRARY_TYPE", "static"));
+   for Library_Kind use Library_Type;
+
+   package Compiler is
+      for Default_Switches ("Ada") use Tux_Config.Ada_Compiler_Switches &
+                                       ("-fcallgraph-info=su",
+                                        "-fstack-usage");
+      for Switches ("tux-hmac.adb") use Tux_Config.Ada_Compiler_Switches &
+                                       ("-fcallgraph-info=su",
+                                        "-fstack-usage",
+                                        "-gnatH");
+   end Compiler;
+
+   package Binder is
+      for Switches ("Ada") use ("-Es"); --  Symbolic traceback
+   end Binder;
+
+   package Install is
+      for Artifacts (".") use ("share");
+   end Install;
+
+   package Prove is
+      for Proof_Switches ("Ada") use ("--proof=per_path",
+                                      "-j0",
+                                      "--prover=all",
+                                      "--timeout=60",
+                                      "--memlimit=0",
+                                      "--steps=10000");
+   end Prove;
+
+end Tux;
