@@ -83,6 +83,18 @@ project Tux is
                                        ("-fcallgraph-info=su",
                                         "-fstack-usage",
                                         "-gnatH");
+
+      case Tux_Config.Build_Profile is
+
+         --  Enable various restriction pragmas during development builds to
+         --  detect use of language features that require runtime support.
+
+         when "development" =>
+            for Local_Configuration_Pragmas use "tux.adc";
+
+         when "validation" | "release" =>
+            null;
+      end case;
    end Compiler;
 
    package Binder is
