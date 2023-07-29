@@ -8,6 +8,8 @@ with Tux.Types;   use Tux.Types;
 
 --  @summary
 --  Keyed-Hash Message Authentication Code (HMAC)
+--
+--  @group Authentication Algorithms
 package Tux.HMAC with
   Preelaborate,
   SPARK_Mode,
@@ -29,9 +31,15 @@ is
 
    type Context (Algorithm : Hashing.Enabled_Algorithm_Kind)
    is limited private;
+   --  Holds the state for a multi-part hashing session.
+   --
+   --  @field Algorithm Selects the hash algorithm to use.
 
    function Finished (Ctx : Context) return Boolean;
    --  Query whether the HMAC session is finished
+   --
+   --  @param Ctx The HMAC session context.
+   --  @return True if the HMAC session is finished, False otherwise.
 
    procedure Initialize
      (Ctx : out Context;
@@ -42,6 +50,9 @@ is
    --  Start a new multi-part HMAC session.
    --
    --  This may be called at any time to begin a new HMAC session.
+   --
+   --  @param Ctx The HMAC context to initialize.
+   --  @param Key The secret authentication key to use for the HMAC session.
 
    procedure Update
      (Ctx  : in out Context;
@@ -53,6 +64,9 @@ is
    --
    --  This may be called multiple times to process large amounts of data
    --  in several steps.
+   --
+   --  @param Ctx The HMAC session context.
+   --  @param Data Buffer containing the data to process in the HMAC session.
 
    procedure Finish
      (Ctx : in out Context;
@@ -97,6 +111,8 @@ is
    procedure Sanitize (Ctx : out Context) with
      Post => Finished (Ctx);
    --  Sanitize any potentially secret data held in an HMAC session context
+   --
+   --  @param Ctx The HMAC session context to sanitize.
 
    ----------------------------
    -- Single-Part Operations --
@@ -104,21 +120,38 @@ is
 
    procedure Compute_HMAC
      (Algorithm :     Hashing.Enabled_Algorithm_Kind;
-           Key       :     Byte_Array;
+      Key       :     Byte_Array;
       Data      :     Byte_Array;
       MAC       : out Byte_Array)
    with
      Pre => Key'Length > 0 and MAC'Length = HMAC_Length (Algorithm);
+   --  Calculate the MAC of a message using HMAC.
+   --
+   --  @param Algorithm The hash algorithm to use for the HMAC calculation.
+   --  @param Key The secret authentication key to use.
+   --  @param Data The data to authenticate.
+   --  @param MAC Buffer to where the calculated MAC is written.
 
    function Verify_HMAC
      (Algorithm    : Hashing.Enabled_Algorithm_Kind;
-           Key          : Byte_Array;
+      Key          : Byte_Array;
       Data         : Byte_Array;
       Expected_MAC : Byte_Array)
       return Boolean
    with
      Pre => Key'Length > 0 and
             Expected_MAC'Length in 1 .. HMAC_Length (Algorithm);
+   --  Verify the MAC of a message using HMAC.
+   --
+   --  @param Algorithm The hash algorithm to use for the HMAC calculation.
+   --  @param Key The secret authentication key to use.
+   --  @param Data The data to authenticate.
+   --  @param Expected_MAC Buffer containing the MAC to compare against the
+   --                      calculated MAC. If this buffer is smaller than the
+   --                      calculated MAC then the first part of the calculated
+   --                      MAC is compared.
+   --  @return True if the calculated MAC exactly matches the Expected_MAC,
+   --          or False otherwise.
 
 private
    use type Hashing.Enabled_Algorithm_Kind;

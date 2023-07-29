@@ -12,6 +12,8 @@ with Tux.Types; use Tux.Types;
 --
 --  @description
 --  This package implements HKDF as defined in RFC 5869.
+--
+--  @group Key Derivation Algorithms
 package Tux.HKDF with
   Preelaborate,
   SPARK_Mode,
@@ -32,7 +34,7 @@ is
    --  by the underlying hash algorithm.
 
    function Max_OKM_Length
-     (Algorithm : Hashing.Enabled_Algorithm_Kind)
+     (Algorithm : Hashing.Algorithm_Kind)
       return OKM_Length_Number
    is
      (OKM_Length_Number (PRK_Length (Algorithm)) * 255);
@@ -41,6 +43,9 @@ is
    --  The maximum OKM length depends on the hash algorithm used.
    --  The OKM length cannot exceed 255 times the size of the digests output
    --  by the selected hash function.
+   --
+   --  @param Algorithm The hash algorithm to look up.
+   --  @return The maximum OKM length for the requested Algorithm.
 
    ----------------------------
    -- Single-Part Operations --

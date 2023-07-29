@@ -5,25 +5,21 @@
 --
 with Tux.Types; use Tux.Types;
 
---  @summary
---  Stub implementation of SHA-1.
---
---  @description
---  This implementation is used when SHA-1 is disabled in the crate
+--  This stub implementation is used when SHA-1 is disabled in the crate
 --  configuration. The purpose of this stub is to allow compilation against
 --  this package so that facilities such as Tux.Hashing will still compile.
+
+--  @private
 package Tux.SHA1 with
   Preelaborate,
   Elaborate_Body,
   SPARK_Mode
 is
 
-   subtype Hash_Length_Number is Byte_Count range 20 .. 20;
-
    Block_Length : constant Byte_Count := 64;
    --  Length of a SHA-1 block in bytes
 
-   SHA1_Hash_Length : constant Hash_Length_Number := 20;
+   SHA1_Hash_Length : constant Byte_Count := 20;
 
    subtype SHA1_Hash is Byte_Array (1 .. SHA1_Hash_Length);
 
@@ -76,7 +72,7 @@ is
      Pre => False;
 
    function Verify_Hash
-     (Data          :     Byte_Array;
+     (Data          : Byte_Array;
       Expected_Hash : Byte_Array)
       return Boolean
    with

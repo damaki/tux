@@ -14,33 +14,46 @@ with Tux.Types; use Tux.Types;
 --  @description
 --  This package provides an implementation of Secure Hash Algorithms (SHA) 1
 --  (SHA-1) as defined in FIPS 180-4.
+--
+--  @group Hash Algorithms
 package Tux.SHA1 with
   Preelaborate,
   Elaborate_Body,
   SPARK_Mode
 is
 
-   subtype Hash_Length_Number is Byte_Count range 20 .. 20;
-
    Block_Length : constant Byte_Count := 64;
    --  Length of a SHA-1 block in bytes
 
-   SHA1_Hash_Length : constant Hash_Length_Number := 20;
+   SHA1_Hash_Length : constant Byte_Count := 20;
+   --  Length of a SHA-1 hash in bytes
 
    subtype SHA1_Hash is Byte_Array (1 .. SHA1_Hash_Length);
+   --  Byte array subtype that can store a SHA-1 hash
 
    ---------------------------
    -- Multi-Part Operations --
    ---------------------------
 
    type Context is limited private;
+   --  Holds the state for a multi-part SHA-1 hashing session
 
    function Finished (Ctx : Context) return Boolean with
      Global => null;
+   --  Query whether the SHA-1 hashing session is finished
+   --
+   --  @param Ctx The hashing session context.
+   --  @return True if the hashing session is finished, False otherwise.
 
    procedure Initialize (Ctx  : out Context) with
      Global => null,
      Post   => not Finished (Ctx);
+   --  Start a new multi-part SHA-1 hashing session.
+   --
+   --  This may be called at any time to abort an existing session and begin
+   --  a new one.
+   --
+   --  @param Ctx The context to initialize.
 
    procedure Update
      (Ctx  : in out Context;
@@ -49,6 +62,13 @@ is
      Global => null,
      Pre    => not Finished (Ctx),
      Post   => not Finished (Ctx);
+   --  Process data in an ongoing SHA-1 hashing session.
+   --
+   --  This may be called multiple times to process large amounts of data
+   --  in several steps.
+   --
+   --  @param Ctx The hashing session context.
+   --  @param Data Buffer containing the data to process in the hashing session
 
    procedure Finish
      (Ctx  : in out Context;
@@ -58,10 +78,22 @@ is
      Global  => null,
      Pre     => not Finished (Ctx) and Hash'Length = SHA1_Hash_Length,
      Post    => Finished (Ctx) and Hash'Initialized;
+   --  Finish a SHA-1 hashing session and output the computed hash.
+   --
+   --  This procedure can be called only once per hashing session.
+   --  After calling this procedure, the hashing session is finished and
+   --  it is not possible to add new data to the session or (re)compute the
+   --  hash. A new session can be started by calling Initialize again.
+   --
+   --  @param Ctx  The hashing session context.
+   --  @param Hash Buffer to where the computed hash is written.
 
    procedure Sanitize (Ctx : out Context) with
      Global  => null,
      Post    => Finished (Ctx);
+   --  Sanitize any potentially secret data held in a hashing session context.
+   --
+   --  @param Ctx The hashing session context to sanitize.
 
    ----------------------------
    -- Single-Part Operations --
@@ -72,13 +104,28 @@ is
       Hash : out Byte_Array)
    with
      Pre => Hash'Length = SHA1_Hash_Length;
+   --  Compute the SHA-1 hash over a buffer.
+   --
+   --  @param Data Buffer containing the data to hash.
+   --  @param Hash Buffer to where the computed SHA-1 hash is written.
+   --              The length of this buffer must be equal to SHA1_Hash_Length.
 
    function Verify_Hash
-     (Data          :     Byte_Array;
+     (Data          : Byte_Array;
       Expected_Hash : Byte_Array)
       return Boolean
    with
      Pre => Expected_Hash'Length in 1 .. SHA1_Hash_Length;
+   --  Compute a SHA-1 hash over a buffer and compare the hash against an
+   --  expected hash value.
+   --
+   --  @param Data          Buffer containing the data to hash.
+   --  @param Expected_Hash Buffer containing the expected hash value.
+   --                       If this is smaller than the generated hash, then
+   --                       only the first part of the generated hash is
+   --                       compared.
+   --  @return True if the generated hash exactly matches the expected hash,
+   --          or False otherwise.
 
 private
    use Interfaces;

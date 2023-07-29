@@ -24,6 +24,10 @@ generic
    --
    --  Blocks'Length is always a multiple of Block_Length when this procedure
    --  is called.
+   --
+   --  @param State  Internal state for the processing.
+   --  @param Blocks Array of blocks to process. The length of this array
+   --                must be a multiple of the Block_Length.
 
    Block_Length : Byte_Count;
    --  The length of each fixed-size block in bytes
@@ -44,8 +48,14 @@ is
    end record;
 
    procedure Sanitize (Ctx : out Context);
+   --  Sanitize any potentially secret data held in a hashing session context.
+   --
+   --  @param Ctx The context to sanitize.
 
    procedure Initialize (Ctx : out Context) renames Sanitize;
+   --  Initialize a context.
+   --
+   --  @param Ctx The context to initialize.
 
    procedure Update
      (Ctx   : in out Context;

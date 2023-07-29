@@ -5,13 +5,11 @@
 --
 with Tux.Types; use Tux.Types;
 
---  @summary
---  Stub implementation of SHA-512.
---
---  @description
---  This implementation is used when SHA-512 is disabled in the crate
+--  This stub implementation is used when SHA-512 is disabled in the crate
 --  configuration. The purpose of this stub is to allow compilation against
 --  this package so that facilities such as Tux.Hashing will still compile.
+
+--  @private
 package Tux.SHA512 with
   Preelaborate,
   Elaborate_Body,
@@ -23,7 +21,6 @@ is
    subtype Hash_Length_Number is Byte_Count range 28 .. 64;
 
    Block_Length : constant Byte_Count := 128;
-   --  Length of a SHA-512 block in bytes
 
    SHA512_224_Hash_Length : constant Hash_Length_Number := 28;
    SHA512_256_Hash_Length : constant Hash_Length_Number := 32;
