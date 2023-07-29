@@ -24,8 +24,8 @@ gnatprove = "12.1.1"
 
 [configuration.variables]
 SHA1_Backend   = { type = "Enum", values = ["Enabled", "Disabled"],       default = "Enabled" }
-SHA256_Backend = { type = "Enum", values = ["Speed", "Size", "Disabled"], default = "Size" }
-SHA512_Backend = { type = "Enum", values = ["Speed", "Size", "Disabled"], default = "Size" }
+SHA256_Backend = { type = "Enum", values = ["Speed", "Size", "Disabled"], default = "Speed" }
+SHA512_Backend = { type = "Enum", values = ["Speed", "Size", "Disabled"], default = "Speed" }
 Self_Tests     = { type = "Enum", values = ["Disabled", "Enabled"],       default = "Enabled" }
 
 [build-switches]
