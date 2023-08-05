@@ -49,7 +49,7 @@ jobs:
       # Build and run the Known Answer Tests
       - name: Run Test Vectors
         run: |
-          pip install pytest
+          pip install pytest pytest-xdist
           cd tests/kat
           ./build-programs.sh
           pytest -n logical .
