@@ -24,15 +24,15 @@ procedure Benchmark is
 
    procedure Benchmark_Hash
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_ID);
+      Algorithm : Tux.Hashing.Algorithm_Kind);
 
    procedure Benchmark_HMAC
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_ID);
+      Algorithm : Tux.Hashing.Algorithm_Kind);
 
    procedure Benchmark_HKDF
      (Buffer    : in out Tux.Types.Byte_Array;
-      Algorithm :        Tux.Hashing.Algorithm_ID);
+      Algorithm :        Tux.Hashing.Algorithm_Kind);
 
    ---------------------------
    -- Print_Cycles_Per_Byte --
@@ -69,7 +69,7 @@ procedure Benchmark is
 
    procedure Benchmark_Hash
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_ID)
+      Algorithm : Tux.Hashing.Algorithm_Kind)
    is
       use type Support.Timing.Cycles_Count;
 
@@ -96,7 +96,7 @@ procedure Benchmark is
          end if;
       end loop;
 
-      Ada.Text_IO.Put (Tux.Hashing.Algorithm_ID'Image (Algorithm));
+      Ada.Text_IO.Put (Tux.Hashing.Algorithm_Kind'Image (Algorithm));
       Ada.Text_IO.Put (": ");
       Print_Cycles_Per_Byte (Buffer'Length, Min_Elapsed);
    end Benchmark_Hash;
@@ -107,7 +107,7 @@ procedure Benchmark is
 
    procedure Benchmark_HMAC
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_ID)
+      Algorithm : Tux.Hashing.Algorithm_Kind)
    is
       use type Support.Timing.Cycles_Count;
 
@@ -137,7 +137,7 @@ procedure Benchmark is
       end loop;
 
       Ada.Text_IO.Put ("HMAC-");
-      Ada.Text_IO.Put (Tux.Hashing.Algorithm_ID'Image (Algorithm));
+      Ada.Text_IO.Put (Tux.Hashing.Algorithm_Kind'Image (Algorithm));
       Ada.Text_IO.Put (": ");
       Print_Cycles_Per_Byte (Buffer'Length, Min_Elapsed);
    end Benchmark_HMAC;
@@ -148,7 +148,7 @@ procedure Benchmark is
 
    procedure Benchmark_HKDF
      (Buffer    : in out Tux.Types.Byte_Array;
-      Algorithm :        Tux.Hashing.Algorithm_ID)
+      Algorithm :        Tux.Hashing.Algorithm_Kind)
    is
       use type Support.Timing.Cycles_Count;
 
@@ -185,7 +185,7 @@ procedure Benchmark is
       end loop;
 
       Ada.Text_IO.Put ("HKDF-");
-      Ada.Text_IO.Put (Tux.Hashing.Algorithm_ID'Image (Algorithm));
+      Ada.Text_IO.Put (Tux.Hashing.Algorithm_Kind'Image (Algorithm));
       Ada.Text_IO.Put (" (Extract): ");
       Print_Cycles_Per_Byte (Buffer'Length, Min_Elapsed);
 
@@ -208,7 +208,7 @@ procedure Benchmark is
       end loop;
 
       Ada.Text_IO.Put ("HKDF-");
-      Ada.Text_IO.Put (Tux.Hashing.Algorithm_ID'Image (Algorithm));
+      Ada.Text_IO.Put (Tux.Hashing.Algorithm_Kind'Image (Algorithm));
       Ada.Text_IO.Put (" (Expand):  ");
       Print_Cycles_Per_Byte (OKM_Length, Min_Elapsed);
    end Benchmark_HKDF;
@@ -230,17 +230,17 @@ begin
       Ada.Text_IO.Put_Line (" bytes");
       Ada.Text_IO.New_Line;
 
-      for Algorithm in Tux.Hashing.Algorithm_ID loop
+      for Algorithm in Tux.Hashing.Algorithm_Kind loop
          Benchmark_Hash (Data_Chunk.all (1 .. Length), Algorithm);
       end loop;
       Ada.Text_IO.New_Line;
 
-      for Algorithm in Tux.Hashing.Algorithm_ID loop
+      for Algorithm in Tux.Hashing.Algorithm_Kind loop
          Benchmark_HMAC (Data_Chunk.all (1 .. Length), Algorithm);
       end loop;
       Ada.Text_IO.New_Line;
 
-      for Algorithm in Tux.Hashing.Algorithm_ID loop
+      for Algorithm in Tux.Hashing.Algorithm_Kind loop
          Benchmark_HKDF (Data_Chunk.all (1 .. Length), Algorithm);
       end loop;
       Ada.Text_IO.New_Line;
