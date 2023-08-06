@@ -20,7 +20,6 @@ tags = [
 
 [[depends-on]]
 gnat = ">=12.0.0"
-gnatprove = "12.1.1"
 
 [configuration.variables]
 SHA1_Backend   = { type = "Enum", values = ["Enabled", "Disabled"],       default = "Enabled" }

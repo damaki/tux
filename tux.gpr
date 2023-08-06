@@ -111,7 +111,7 @@ project Tux is
                                       "--prover=all",
                                       "--timeout=60",
                                       "--memlimit=0",
-                                      "--steps=10000");
+                                      "--steps=7500");
    end Prove;
 
 end Tux;
