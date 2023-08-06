@@ -1,0 +1,26 @@
+on:                    # Run the workflow for each of the following event:
+  workflow_dispatch:   # - A manual run of the workflow is requested from the GitHub web interface.
+
+jobs:
+  proof:
+    strategy:
+      fail-fast: false # Don't stop all the workflows when one of them fails.
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v2
+
+      # Install and setup Alire package manager
+      - uses: alire-project/setup-alire@v1
+        with:
+          version: 1.2.0
+
+      # Generate the proofs
+      # Note that this is likely to take a fairly long time on a dual-core CI
+      # runner, so this workflow is triggered manually as needed.
+      - name: Prove
+        run: |
+          cd prove
+          alr exec -- gnatprove -P ../tux.gpr
