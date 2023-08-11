@@ -264,120 +264,83 @@ package body Hashing_Tests is
          Name : constant String :=
                   Tux.Hashing.Algorithm_Kind'Image (Algorithm);
       begin
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (1 byte parts)",
-               Test_Multi_Part_1'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (2 byte parts)",
-               Test_Multi_Part_2'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (31 byte parts)",
-               Test_Multi_Part_31'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (32 byte parts)",
-               Test_Multi_Part_32'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (33 byte parts)",
-               Test_Multi_Part_33'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (63 byte parts)",
-               Test_Multi_Part_63'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (64 byte parts)",
-               Test_Multi_Part_64'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (65 byte parts)",
-               Test_Multi_Part_65'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (127 byte parts)",
-               Test_Multi_Part_127'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (128 byte parts)",
-               Test_Multi_Part_128'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " multi-part test (129 byte parts)",
-               Test_Multi_Part_129'Access));
+         if Algorithm in Tux.Hashing.Enabled_Algorithm_Kind then
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (1 byte parts)",
+                  Test_Multi_Part_1'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (2 byte parts)",
+                  Test_Multi_Part_2'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (31 byte parts)",
+                  Test_Multi_Part_31'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (32 byte parts)",
+                  Test_Multi_Part_32'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (33 byte parts)",
+                  Test_Multi_Part_33'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (63 byte parts)",
+                  Test_Multi_Part_63'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (64 byte parts)",
+                  Test_Multi_Part_64'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (65 byte parts)",
+                  Test_Multi_Part_65'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (127 byte parts)",
+                  Test_Multi_Part_127'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (128 byte parts)",
+                  Test_Multi_Part_128'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " multi-part test (129 byte parts)",
+                  Test_Multi_Part_129'Access));
 
-         S.Add_Test
-           (Caller.Create
-              (Name & " test single-part hash verify - valid hash",
-               Test_Verify_Valid_Hash'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " test single-part hash verify - byte corrupted",
-               Test_Verify_Invalid_First_Byte'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " test single-part hash verify - last byte corrupted",
-               Test_Verify_Invalid_Last_Byte'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " test single-part hash verify - valid hash",
+                  Test_Verify_Valid_Hash'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " test single-part hash verify - byte corrupted",
+                  Test_Verify_Invalid_First_Byte'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " test single-part hash verify - last byte corrupted",
+                  Test_Verify_Invalid_Last_Byte'Access));
 
-         S.Add_Test
-           (Caller.Create
-              (Name & " test multi-part hash finish & verify - valid hash",
-               Test_Finish_Verify_Valid_Hash'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " test multi-part hash finish & verify - "
-                 & "first byte corrupted",
-               Test_Finish_Verify_Invalid_First_Byte'Access));
-         S.Add_Test
-           (Caller.Create
-              (Name & " test multi-part hash finish & verify - "
-                 & "last byte corrupted",
-               Test_Finish_Verify_Invalid_Last_Byte'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name &
+                    " test multi-part hash finish and verify - valid hash",
+                  Test_Finish_Verify_Valid_Hash'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " test multi-part hash finish and verify - "
+                    & "first byte corrupted",
+                  Test_Finish_Verify_Invalid_First_Byte'Access));
+            S.Add_Test
+              (Caller.Create
+                 (Name & " test multi-part hash finish and verify - "
+                    & "last byte corrupted",
+                  Test_Finish_Verify_Invalid_Last_Byte'Access));
+         end if;
       end Add_To_Suite;
 
    end Generic_Hashing_Tests;
-
-   -----------
-   -- Suite --
-   -----------
-
-   package SHA1_Multi_Part_Tests is new Generic_Hashing_Tests
-     (Tux.Hashing.SHA1);
-
-   package SHA224_Multi_Part_Tests is new Generic_Hashing_Tests
-     (Tux.Hashing.SHA224);
-
-   package SHA256_Multi_Part_Tests is new Generic_Hashing_Tests
-     (Tux.Hashing.SHA256);
-
-   package SHA384_Multi_Part_Tests is new Generic_Hashing_Tests
-     (Tux.Hashing.SHA384);
-
-   package SHA512_Multi_Part_Tests is new Generic_Hashing_Tests
-     (Tux.Hashing.SHA512);
-
-   package SHA512_224_Multi_Part_Tests is new Generic_Hashing_Tests
-     (Tux.Hashing.SHA512_224);
-
-   package SHA512_256_Multi_Part_Tests is new Generic_Hashing_Tests
-     (Tux.Hashing.SHA512_256);
-
-   function Suite return Access_Test_Suite is
-      S : constant Access_Test_Suite := new Test_Suite;
-   begin
-
-      SHA1_Multi_Part_Tests.Add_To_Suite (S.all);
-      SHA224_Multi_Part_Tests.Add_To_Suite (S.all);
-      SHA256_Multi_Part_Tests.Add_To_Suite (S.all);
-      SHA384_Multi_Part_Tests.Add_To_Suite (S.all);
-      SHA512_Multi_Part_Tests.Add_To_Suite (S.all);
-      SHA512_224_Multi_Part_Tests.Add_To_Suite (S.all);
-      SHA512_256_Multi_Part_Tests.Add_To_Suite (S.all);
-
-      return S;
-   end Suite;
 
 end Hashing_Tests;

@@ -16,10 +16,3 @@ gnatcov = "^22.0.1"
 [[pins]]
 tux = { path = "../.." }
 support = { path = "../support" }
-
-[build-profiles]
-tux = "release"
-
-[configuration.values]
-tux.SHA512_Backend = "Speed"
-tux.SHA256_Backend = "Speed"

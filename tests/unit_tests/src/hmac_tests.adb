@@ -312,128 +312,90 @@ package body HMAC_Tests is
       -- Add_To_Suite --
       ------------------
 
-      function Suite return Access_Test_Suite is
+      procedure Add_To_Suite (S : in out Test_Suite'Class) is
          Name : constant String :=
                   Tux.Hashing.Algorithm_Kind'Image (Algorithm);
-
-         S : constant Access_Test_Suite := new Test_Suite;
       begin
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (1 byte parts)",
-               Test_Multi_Part_1'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (2 byte parts)",
-               Test_Multi_Part_2'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (31 byte parts)",
-               Test_Multi_Part_31'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (32 byte parts)",
-               Test_Multi_Part_32'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (33 byte parts)",
-               Test_Multi_Part_33'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (63 byte parts)",
-               Test_Multi_Part_63'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (64 byte parts)",
-               Test_Multi_Part_64'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (65 byte parts)",
-               Test_Multi_Part_65'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (127 byte parts)",
-               Test_Multi_Part_127'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (128 byte parts)",
-               Test_Multi_Part_128'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " multi-part test (129 byte parts)",
-               Test_Multi_Part_129'Access));
+         if Algorithm in Tux.Hashing.Enabled_Algorithm_Kind then
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (1 byte parts)",
+                  Test_Multi_Part_1'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (2 byte parts)",
+                  Test_Multi_Part_2'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (31 byte parts)",
+                  Test_Multi_Part_31'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (32 byte parts)",
+                  Test_Multi_Part_32'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (33 byte parts)",
+                  Test_Multi_Part_33'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (63 byte parts)",
+                  Test_Multi_Part_63'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (64 byte parts)",
+                  Test_Multi_Part_64'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (65 byte parts)",
+                  Test_Multi_Part_65'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (127 byte parts)",
+                  Test_Multi_Part_127'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (128 byte parts)",
+                  Test_Multi_Part_128'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " multi-part test (129 byte parts)",
+                  Test_Multi_Part_129'Access));
 
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " test single-part HMAC Verify - "
-                 & "valid hash",
-               Test_Verify_Valid_HMAC'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " test single-part HMAC Verify - "
-                 & "first byte corrupted",
-               Test_Verify_Invalid_First_Byte'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " test single-part HMAC Verify - "
-                 & "last byte corrupted",
-               Test_Verify_Invalid_Last_Byte'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " test single-part HMAC Verify - "
+                    & "valid hash",
+                  Test_Verify_Valid_HMAC'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " test single-part HMAC Verify - "
+                    & "first byte corrupted",
+                  Test_Verify_Invalid_First_Byte'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " test single-part HMAC Verify - "
+                    & "last byte corrupted",
+                  Test_Verify_Invalid_Last_Byte'Access));
 
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " test multi-part HMAC Finish & Verify - "
-                 & "valid hash",
-               Test_Finish_And_Verify_Valid_HMAC'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " test multi-part HMAC Finish & Verify - "
-                 & "first byte corrupted",
-               Test_Finish_And_Verify_Invalid_First_Byte'Access));
-         S.Add_Test
-           (Caller.Create
-              ("HMAC-" & Name & " test multi-part HMAC Finish & Verify - "
-                 & "last byte corrupted",
-               Test_Finish_And_Verify_Invalid_Last_Byte'Access));
-
-         return S;
-      end Suite;
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " test multi-part HMAC Finish and Verify - "
+                    & "valid hash",
+                  Test_Finish_And_Verify_Valid_HMAC'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " test multi-part HMAC Finish and Verify - "
+                    & "first byte corrupted",
+                  Test_Finish_And_Verify_Invalid_First_Byte'Access));
+            S.Add_Test
+              (Caller.Create
+                 ("HMAC-" & Name & " test multi-part HMAC Finish and Verify - "
+                    & "last byte corrupted",
+                  Test_Finish_And_Verify_Invalid_Last_Byte'Access));
+         end if;
+      end Add_To_Suite;
 
    end Generic_HMAC_Tests;
-
-   -----------
-   -- Suite --
-   -----------
-
-   package SHA224_Multi_Part_Tests is new Generic_HMAC_Tests
-     (Tux.Hashing.SHA224);
-
-   package SHA256_Multi_Part_Tests is new Generic_HMAC_Tests
-     (Tux.Hashing.SHA256);
-
-   package SHA384_Multi_Part_Tests is new Generic_HMAC_Tests
-     (Tux.Hashing.SHA384);
-
-   package SHA512_Multi_Part_Tests is new Generic_HMAC_Tests
-     (Tux.Hashing.SHA512);
-
-   package SHA512_224_Multi_Part_Tests is new Generic_HMAC_Tests
-     (Tux.Hashing.SHA512_224);
-
-   package SHA512_256_Multi_Part_Tests is new Generic_HMAC_Tests
-     (Tux.Hashing.SHA512_256);
-
-   function Suite return Access_Test_Suite is
-      S : constant Access_Test_Suite := new Test_Suite;
-   begin
-
-      S.Add_Test (SHA224_Multi_Part_Tests.Suite);
-      S.Add_Test (SHA256_Multi_Part_Tests.Suite);
-      S.Add_Test (SHA384_Multi_Part_Tests.Suite);
-      S.Add_Test (SHA512_Multi_Part_Tests.Suite);
-      S.Add_Test (SHA512_224_Multi_Part_Tests.Suite);
-      S.Add_Test (SHA512_256_Multi_Part_Tests.Suite);
-
-      return S;
-   end Suite;
 
 end HMAC_Tests;
