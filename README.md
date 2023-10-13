@@ -86,18 +86,25 @@ variables supported by Tux are:
     <th>Description</th>
   </thead>
   <tr>
-    <td><tt>SHA1_Backend</tt></td>
+    <td><tt>SHA1_Enabled</tt></td>
     <td>
-      <tt>"Enabled"</tt><br/>
-      <tt>"Disabled"</tt><br/>
+      <tt>true</tt><br/>
+      <tt>false</tt><br/>
     </td>
-    <td><tt>"Enabled"</tt></td>
+    <td><tt>true</tt></td>
     <td>
-      Configures the SHA-1 backend.
-      <ul>
-        <li><tt>"Enabled"</tt> enables support for SHA-1.</li>
-        <li><tt>"Disabled"</tt> disables support for SHA-1.</li>
-      </ul>
+      Enables/disables support for SHA-1.
+    </td>
+  </tr>
+  <tr>
+    <td><tt>SHA256_Enabled</tt></td>
+    <td>
+      <tt>true</tt><br/>
+      <tt>false</tt><br/>
+    </td>
+    <td><tt>true</tt></td>
+    <td>
+      Enables/disables support for SHA-256 and SHA-224.
     </td>
   </tr>
   <tr>
@@ -105,16 +112,26 @@ variables supported by Tux are:
     <td>
       <tt>"Speed"</tt><br/>
       <tt>"Size"</tt><br/>
-      <tt>"Disabled"</tt><br/>
     </td>
     <td><tt>"Speed"</tt></td>
     <td>
       Configures the SHA-256 and SHA-224 backend.
+      This variable has no effect when `SHA256_Enabled` is `false`.
       <ul>
         <li><tt>"Speed"</tt> selects the implementation optimised for speed.</li>
         <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li>
-        <li><tt>"Disabled"</tt> disables support for SHA-224 and SHA-256.</li>
       </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>SHA512_Enabled</tt></td>
+    <td>
+      <tt>true</tt><br/>
+      <tt>false</tt><br/>
+    </td>
+    <td><tt>true</tt></td>
+    <td>
+      Enables/disables support for SHA-512, SHA-384, SHA-512/224, and SHA-512/256.
     </td>
   </tr>
   <tr>
@@ -122,27 +139,26 @@ variables supported by Tux are:
     <td>
       <tt>"Speed"</tt><br/>
       <tt>"Size"</tt><br/>
-      <tt>"Disabled"</tt><br/>
     </td>
     <td><tt>"Speed"</tt></td>
     <td>
       Configures the SHA-512, SHA-384, SHA-512/224, and SHA-512/256 backend.
+      This variable has no effect when `SHA512_Enabled` is `false`.
       <ul>
         <li><tt>"Speed"</tt> selects the implementation optimised for speed.</li>
-        <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li>
-        <li><tt>"Disabled"</tt> disables support for SHA-384, SHA-512, SHA-512/224, and SHA-512/256.</li>
+        <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li></li>
       </ul>
     </td>
   </tr>
   <tr>
-    <td><tt>Self_Tests</tt></td>
+    <td><tt>Self_Tests_Enabled</tt></td>
     <td>
-      <tt>"Enabled"</tt><br/>
-      <tt>"Disabled"</tt><br/>
+      <tt>true</tt><br/>
+      <tt>false</tt><br/>
     </td>
-    <td><tt>"Enabled"</tt></td>
+    <td><tt>true</tt></td>
     <td>
-      Enables support for self-test subprograms.
+      Enables/disables self-test subprograms.
     </td>
   </tr>
 </table>
