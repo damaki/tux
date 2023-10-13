@@ -65,12 +65,6 @@ package Hashing_Tests is
 
    end Generic_Hashing_Tests;
 
-   -----------
-   -- Suite --
-   -----------
-
-   function Suite return Access_Test_Suite;
-
 private
 
    procedure Multi_Part_Test

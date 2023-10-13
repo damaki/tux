@@ -68,6 +68,7 @@ begin
    if Algo not in Tux.Hashing.Enabled_Algorithm_Kind then
       Put_Line (Standard_Error, "Algorithm " & Argument (1) & " is disabled");
       Set_Exit_Status (2);
+      return;
    end if;
 
    --  Parse the key given from the command line

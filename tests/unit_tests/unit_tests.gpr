@@ -2,11 +2,92 @@ with "config/unit_tests_config.gpr";
 with "../../config/tux_config.gpr";
 project Unit_Tests is
 
-   for Source_Dirs use ("src/", "config/");
+   for Source_Dirs use (
+      "src/",
+      "src/sha1",
+      "src/sha256",
+      "src/sha512",
+      "src/" & Unit_Tests_Config.Report_Format,
+      "config/");
    for Object_Dir use "obj/" & Unit_Tests_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
    for Exec_Dir use "bin";
    for Main use ("unit_tests.adb");
+
+   --  Variables to control which sources are selected for testing.
+   --
+   --  Algorithms that are disabled in the test configuration are replaced
+   --  with stub implementations to exclude those tests.
+
+   SHA1_Self_Tests_Backend := "";
+   SHA256_Self_Tests_Backend := "";
+   SHA512_Self_Tests_Backend := "";
+   SHA1_Backend := "";
+   SHA256_Backend := "";
+   SHA512_Backend := "";
+
+   case Tux_Config.Self_Tests is
+      when "Enabled" =>
+         case Tux_Config.SHA1_Backend is
+            when "Disabled" =>
+               SHA1_Self_Tests_Backend := "disabled";
+            when others =>
+               SHA1_Self_Tests_Backend := "enabled";
+         end case;
+
+         case Tux_Config.SHA256_Backend is
+            when "Disabled" =>
+               SHA256_Self_Tests_Backend := "disabled";
+            when others =>
+               SHA256_Self_Tests_Backend := "enabled";
+         end case;
+
+         case Tux_Config.SHA512_Backend is
+            when "Disabled" =>
+               SHA512_Self_Tests_Backend := "disabled";
+            when others =>
+               SHA512_Self_Tests_Backend := "enabled";
+         end case;
+
+      when "Disabled" =>
+         SHA1_Self_Tests_Backend   := "disabled";
+         SHA256_Self_Tests_Backend := "disabled";
+         SHA512_Self_Tests_Backend := "disabled";
+   end case;
+
+   case Tux_Config.SHA1_Backend is
+      when "Disabled" =>
+         SHA1_Backend := "disabled";
+      when others =>
+         SHA1_Backend := "enabled";
+   end case;
+
+   case Tux_Config.SHA256_Backend is
+      when "Disabled" =>
+         SHA256_Backend := "disabled";
+      when others =>
+         SHA256_Backend := "enabled";
+   end case;
+
+   case Tux_Config.SHA512_Backend is
+      when "Disabled" =>
+         SHA512_Backend := "disabled";
+      when others =>
+         SHA512_Backend := "enabled";
+   end case;
+
+   package Naming is
+      for Body ("SHA1_Self_Tests")   use "sha1_self_tests__" & SHA1_Self_Tests_Backend & ".adb";
+      for Body ("SHA256_Self_Tests") use "sha256_self_tests__" & SHA256_Self_Tests_Backend & ".adb";
+      for Body ("SHA512_Self_Tests") use "sha512_self_tests__" & SHA512_Self_Tests_Backend & ".adb";
+      for Body ("HMAC_SHA1_Tests")   use "hmac_sha1_tests__" & SHA1_Backend &".adb";
+      for Body ("HMAC_SHA256_Tests") use "hmac_sha256_tests__" & SHA256_Backend &".adb";
+      for Body ("HMAC_SHA512_Tests") use "hmac_sha512_tests__" & SHA512_Backend &".adb";
+      for Body ("SHA1_Tests")        use "sha1_tests__" & SHA1_Backend &".adb";
+      for Body ("SHA256_Tests")      use "sha256_tests__" & SHA256_Backend &".adb";
+      for Body ("SHA512_Tests")      use "sha512_tests__" & SHA512_Backend &".adb";
+      for Body ("SHA512_Length_Tests") use "sha512_length_tests__" & SHA512_Backend &".adb";
+   end Naming;
 
    package Compiler is
       for Default_Switches ("Ada") use Unit_Tests_Config.Ada_Compiler_Switches;

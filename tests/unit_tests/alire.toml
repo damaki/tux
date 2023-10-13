@@ -12,14 +12,10 @@ executables = ["unit_tests"]
 tux = "*"
 support = "*"
 aunit = "^22.0.0"
-gnatcov = "^22.0.1"
 
 [[pins]]
 tux = { path = "../.." }
 support = { path = "../support" }
 
-[build-profiles]
-tux = "validation"
-
-[configuration.values]
-tux.Self_Tests = "Enabled"
+[configuration.variables]
+Report_Format = { type = "Enum", values = ["Text", "XML"], default = "Text" }

@@ -1,5 +1,7 @@
 import subprocess
 import loaders
+import os
+import pathlib
 import pytest
 
 # Exit codes for the hkdf test program
@@ -10,6 +12,8 @@ DISABLED_ALGO_EXIT_CODE = 2
 def pytest_generate_tests(metafunc):
     if getattr(metafunc.function, "tc_cases", None):
         metafunc.parametrize(metafunc.function.tc_params, metafunc.function.tc_cases)
+
+_this_file_dir = pathlib.Path(os.path.realpath(os.path.dirname(__file__)))
 
 #######################
 # Test Vector Runners #
@@ -29,8 +33,10 @@ def run_hkdf_program(hash_func: str, ikm: str, salt: str, info: str, okm_len: in
     print(f"info: '{info}'")
     print(f"okm_len: {okm_len}")
 
+    prog = _this_file_dir / "programs" / "hkdf" / "bin" / "hkdf"
+
     completed_process = subprocess.run(
-        args=["./programs/hkdf/bin/hkdf", hash_func, ikm, info, okm_len, salt],
+        args=[prog, hash_func, ikm, info, okm_len, salt],
         stdout=subprocess.PIPE
     )
 
@@ -43,7 +49,9 @@ def run_hkdf_program(hash_func: str, ikm: str, salt: str, info: str, okm_len: in
 # NIST tests #
 ##############
 
-@loaders.load_msg_rsp_test_vectors("./test_vectors/NIST/hkdftestvectors/HKDF.rsp")
+nist_test_vectors_dir = _this_file_dir / "test_vectors" / "NIST" / "hkdftestvectors"
+
+@loaders.load_msg_rsp_test_vectors(nist_test_vectors_dir / "HKDF.rsp")
 def test_hkdf_nist(test_vector):
 
     # Not all hash lengths in HKDF.rsp are supported.
@@ -81,18 +89,20 @@ def run_wycheproof_hkdf_test(algorithm: str, test_vector: dict):
 
     assert test_vector["okm"].lower() == calculated_okm
 
-@loaders.load_wycheproof_test_vectors("./test_vectors/wycheproof/hkdf_sha1_test.json")
+wp_test_vectors_dir = _this_file_dir / "test_vectors" / "wycheproof"
+
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hkdf_sha1_test.json")
 def test_hkdf_wycheproof_sha1(test_vector):
     run_wycheproof_hkdf_test("SHA1", test_vector)
 
-@loaders.load_wycheproof_test_vectors("./test_vectors/wycheproof/hkdf_sha256_test.json")
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hkdf_sha256_test.json")
 def test_hkdf_wycheproof_sha256(test_vector):
     run_wycheproof_hkdf_test("SHA256", test_vector)
 
-@loaders.load_wycheproof_test_vectors("./test_vectors/wycheproof/hkdf_sha384_test.json")
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hkdf_sha384_test.json")
 def test_hkdf_wycheproof_sha384(test_vector):
     run_wycheproof_hkdf_test("SHA384", test_vector)
 
-@loaders.load_wycheproof_test_vectors("./test_vectors/wycheproof/hkdf_sha512_test.json")
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hkdf_sha512_test.json")
 def test_hkdf_wycheproof_sha512(test_vector):
     run_wycheproof_hkdf_test("SHA512", test_vector)

@@ -55,15 +55,13 @@ package HMAC_Tests is
       procedure Test_Finish_And_Verify_Invalid_First_Byte (T : in out Test);
       procedure Test_Finish_And_Verify_Invalid_Last_Byte (T : in out Test);
 
-      function Suite return Access_Test_Suite;
+      procedure Add_To_Suite (S : in out Test_Suite'Class);
 
    private
 
       package Caller is new AUnit.Test_Caller (Test);
 
    end Generic_HMAC_Tests;
-
-   function Suite return Access_Test_Suite;
 
 private
 

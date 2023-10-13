@@ -9,12 +9,8 @@ maintainers-logins = ["damaki"]
 [[depends-on]]
 tux = "*"
 support = "*"
-gnatcov = "^22.0.1"
 
 [[pins]]
 tux = { path = "../../../.." }
 support = { path = "../../../support" }
-
-[build-profiles]
-tux = "validation"
 

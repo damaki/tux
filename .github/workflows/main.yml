@@ -8,55 +8,76 @@ on:                    # Run the workflow for each of the following event:
     types: [created]   # - A release is created.
 
 jobs:
-  build-and-test:
-    strategy:
-      fail-fast: false # Don't stop all the workflows when one of them fails.
 
+  # Build the library in the default configuration as a quick check for
+  # obvious build problems
+  check-build:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - uses: actions/checkout@v3
 
-      # Install and setup Alire package manager
       - uses: alire-project/setup-alire@v1
         with:
           version: 1.2.0
 
-      # Install and setup PyTest to run the test vectors
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      # Build the project using the validation build profile to enforce
-      # static analysis and coding style.
+      # Use the validation build profile to enforce static analysis and coding style.
       - name: Build
         run: |
           alr build --validation
 
-      # Build and run the benchmark program
-      # Note that the benchmark measurements are unlikely to be fully
-      # representative due to interference from other processes on the CI
-      # runner, but the purpose of this check is to ensure that the benchmark
-      # builds and runs without errors.
-      - name: Run Benchmark
-        run: |
-          cd tests/benchmark
-          alr build --validation
-          alr build --release
-          alr run -s
+  test:
+    needs: check-build
 
-      # Build and run the Known Answer Tests
-      - name: Run Test Vectors
-        run: |
-          pip install pytest pytest-xdist
-          cd tests/kat
-          ./build-programs.sh
-          pytest -n logical .
+    strategy:
+      matrix:
+        sha1_backend: [Enabled]
+        sha256_backend: [Speed]
+        sha512_backend: [Speed]
+        self_tests: [Enabled]
+        include:
+          - sha1_backend: Enabled
+            sha256_backend: Size
+            sha512_backend: Size
+            self_tests: Enabled
 
-      # Build and run the unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: alire-project/setup-alire@v1
+        with:
+          version: 1.2.0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Test Dependencies
+        run: |
+          pip install -r tests/requirements.txt
+
+      - name: Build Tests
+        run: |
+          cd tests
+          python make_build_crate.py \
+            --output-dir=test_crate \
+            --tux-build-profile=validation \
+            --unit-tests-report-format=XML \
+            --sha1-backend=${{ matrix.sha1_backend }} \
+            --sha256-backend=${{ matrix.sha256_backend }} \
+            --sha512-backend=${{ matrix.sha512_backend }} \
+            --self-tests=${{ matrix.self_tests }}
+          cd test_crate
+          alr build
+
+      - name: Run Known Answer Tests
+        run: |
+          cd tests
+          pytest kat -n logical --html=kat_report.html --self-contained-html --junitxml=kat.xml
+
       - name: Run Unit Tests
         run: |
-          cd tests/unit_tests
-          alr build --validation
-          alr run -s
+          cd tests
+          unit_tests/bin/unit_tests > unit_tests.xml
