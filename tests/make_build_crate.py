@@ -222,9 +222,10 @@ def parse_args(tux_config_vars: Dict[str, Dict[str, Any]]):
         elif var_type == "Boolean":
             parser.add_argument(
                 f"--{name}".lower().replace("_", "-"),
-                type=bool,
+                type=str,
                 action="store",
-                default=tux_config_vars[name]["default"],
+                choices=["True", "False"],
+                default="True" if tux_config_vars[name]["default"] else "False",
                 help=f"Crate configuration value to use for Tux.{name}",
             )
         else:
@@ -273,7 +274,7 @@ def config_value_repr(value, type):
 
     """
     if type == "Boolean":
-        return str(value).lower()
+        return value.lower()
     else:
         return f'"{value}"'
 
