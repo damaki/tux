@@ -47,13 +47,13 @@ is
    -- Enabled Hash Algorithm IDs --
    --------------------------------
 
-   SHA1_Disabled : constant Boolean := Tux_Config.SHA1_Backend = Disabled;
+   SHA1_Disabled : constant Boolean := not Tux_Config.SHA1_Enabled;
    --  @private
 
-   SHA256_Disabled : constant Boolean := Tux_Config.SHA256_Backend = Disabled;
+   SHA256_Disabled : constant Boolean := not Tux_Config.SHA256_Enabled;
    --  @private
 
-   SHA512_Disabled : constant Boolean := Tux_Config.SHA512_Backend = Disabled;
+   SHA512_Disabled : constant Boolean := not Tux_Config.SHA512_Enabled;
    --  @private
 
    pragma Warnings

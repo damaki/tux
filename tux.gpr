@@ -8,11 +8,11 @@ project Tux is
 
    SHA1_Dirs := ();
    SHA1_Self_Test_Dirs := ();
-   case Tux_Config.SHA1_Backend is
-      when "Enabled" =>
+   case Tux_Config.SHA1_Enabled is
+      when "True" =>
          SHA1_Dirs           := ("src/spark/sha1/enabled");
          SHA1_Self_Test_Dirs := ("src/spark/sha1/self_test/");
-      when "Disabled" =>
+      when others =>
          SHA1_Dirs           := ("src/spark/sha1/disabled");
    end case;
 
@@ -20,16 +20,17 @@ project Tux is
 
    SHA256_Dirs := ();
    SHA256_Self_Test_Dirs := ();
-   case Tux_Config.SHA256_Backend is
-      when "Speed" =>
-         SHA256_Dirs           := ("src/spark/sha256/enabled",
-                                   "src/spark/sha256/speed/");
+   case Tux_Config.SHA256_Enabled is
+      when "True" =>
+         SHA256_Dirs           := ("src/spark/sha256/enabled");
          SHA256_Self_Test_Dirs := ("src/spark/sha256/self_test/");
-      when "Size"  =>
-         SHA256_Dirs           := ("src/spark/sha256/enabled",
-                                   "src/spark/sha256/size/");
-         SHA256_Self_Test_Dirs := ("src/spark/sha256/self_test/");
-      when "Disabled" =>
+         case Tux_Config.SHA256_Backend is
+            when "Speed" =>
+               SHA256_Dirs := SHA256_Dirs & ("src/spark/sha256/enabled/speed/");
+            when "Size"  =>
+               SHA256_Dirs := SHA256_Dirs & ("src/spark/sha256/enabled/size/");
+         end case;
+      when others =>
          SHA256_Dirs           := ("src/spark/sha256/disabled");
    end case;
 
@@ -37,24 +38,25 @@ project Tux is
 
    SHA512_Dirs := ();
    SHA512_Self_Test_Dirs := ();
-   case Tux_Config.SHA512_Backend is
-      when "Speed" =>
-         SHA512_Dirs           := ("src/spark/sha512/enabled",
-                                   "src/spark/sha512/speed/");
+   case Tux_Config.SHA512_Enabled is
+      when "True" =>
+         SHA512_Dirs           := ("src/spark/sha512/enabled");
          SHA512_Self_Test_Dirs := ("src/spark/sha512/self_test/");
-      when "Size"  =>
-         SHA512_Dirs           := ("src/spark/sha512/enabled",
-                                   "src/spark/sha512/size/");
-         SHA512_Self_Test_Dirs := ("src/spark/sha512/self_test/");
-      when "Disabled" =>
+         case Tux_Config.SHA512_Backend is
+            when "Speed" =>
+               SHA512_Dirs := SHA512_Dirs & ("src/spark/sha512/enabled/speed/");
+            when "Size"  =>
+               SHA512_Dirs := SHA512_Dirs & ("src/spark/sha512/enabled/size/");
+         end case;
+      when others =>
          SHA512_Dirs           := ("src/spark/sha512/disabled");
    end case;
 
    --  Add self test directories when enabled
 
    Self_Test_Dirs := ();
-   case Tux_Config.Self_Tests is
-      when "Enabled" =>
+   case Tux_Config.Self_Tests_Enabled is
+      when "True" =>
          Self_Test_Dirs := SHA1_Self_Test_Dirs &
                            SHA256_Self_Test_Dirs &
                            SHA512_Self_Test_Dirs;
