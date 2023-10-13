@@ -26,51 +26,51 @@ project Unit_Tests is
    SHA256_Backend := "";
    SHA512_Backend := "";
 
-   case Tux_Config.Self_Tests is
-      when "Enabled" =>
-         case Tux_Config.SHA1_Backend is
-            when "Disabled" =>
+   case Tux_Config.Self_Tests_Enabled is
+      when "True" =>
+         case Tux_Config.SHA1_Enabled is
+            when "False" =>
                SHA1_Self_Tests_Backend := "disabled";
             when others =>
                SHA1_Self_Tests_Backend := "enabled";
          end case;
 
-         case Tux_Config.SHA256_Backend is
-            when "Disabled" =>
+         case Tux_Config.SHA256_Enabled is
+            when "False" =>
                SHA256_Self_Tests_Backend := "disabled";
             when others =>
                SHA256_Self_Tests_Backend := "enabled";
          end case;
 
-         case Tux_Config.SHA512_Backend is
-            when "Disabled" =>
+         case Tux_Config.SHA512_Enabled is
+            when "False" =>
                SHA512_Self_Tests_Backend := "disabled";
             when others =>
                SHA512_Self_Tests_Backend := "enabled";
          end case;
 
-      when "Disabled" =>
+      when "False" =>
          SHA1_Self_Tests_Backend   := "disabled";
          SHA256_Self_Tests_Backend := "disabled";
          SHA512_Self_Tests_Backend := "disabled";
    end case;
 
-   case Tux_Config.SHA1_Backend is
-      when "Disabled" =>
+   case Tux_Config.SHA1_Enabled is
+      when "False" =>
          SHA1_Backend := "disabled";
       when others =>
          SHA1_Backend := "enabled";
    end case;
 
-   case Tux_Config.SHA256_Backend is
-      when "Disabled" =>
+   case Tux_Config.SHA256_Enabled is
+      when "False" =>
          SHA256_Backend := "disabled";
       when others =>
          SHA256_Backend := "enabled";
    end case;
 
-   case Tux_Config.SHA512_Backend is
-      when "Disabled" =>
+   case Tux_Config.SHA512_Enabled is
+      when "False" =>
          SHA512_Backend := "disabled";
       when others =>
          SHA512_Backend := "enabled";

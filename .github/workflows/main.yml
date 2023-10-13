@@ -31,15 +31,21 @@ jobs:
 
     strategy:
       matrix:
-        sha1_backend: [Enabled]
-        sha256_backend: [Speed]
-        sha512_backend: [Speed]
-        self_tests: [Enabled]
+        # Test various combinations of enabled algorithms
+        sha1_enabled: ["True", "False"]
+        sha256_enabled: ["True", "False"]
+        sha256_backend: ["Speed"]
+        sha512_enabled: ["True", "False"]
+        sha512_backend: ["Speed"]
+        self_tests_enabled: ["True"]
         include:
-          - sha1_backend: Enabled
-            sha256_backend: Size
-            sha512_backend: Size
-            self_tests: Enabled
+          # Test algorithms optimised for size
+          - sha1_enabled: "True"
+            sha256_enabled: "True"
+            sha256_backend: "Size"
+            sha512_enabled: "True"
+            sha512_backend: "Size"
+            self_tests_enabled: "True"
 
     runs-on: ubuntu-latest
 
@@ -65,10 +71,12 @@ jobs:
             --output-dir=test_crate \
             --tux-build-profile=validation \
             --unit-tests-report-format=XML \
-            --sha1-backend=${{ matrix.sha1_backend }} \
+            --sha1-enabled=${{ matrix.sha1_enabled }} \
+            --sha256-enabled=${{ matrix.sha256_enabled }} \
             --sha256-backend=${{ matrix.sha256_backend }} \
+            --sha512-enabled=${{ matrix.sha512_enabled }} \
             --sha512-backend=${{ matrix.sha512_backend }} \
-            --self-tests=${{ matrix.self_tests }}
+            --self-tests-enabled=${{ matrix.self_tests_enabled }}
           cd test_crate
           alr build
 
