@@ -31,13 +31,15 @@ jobs:
 
     strategy:
       matrix:
-        sha1_enabled: ["True"]
-        sha256_enabled: ["True"]
+        # Test various combinations of enabled algorithms
+        sha1_enabled: ["True", "False"]
+        sha256_enabled: ["True", "False"]
         sha256_backend: ["Speed"]
-        sha512_enabled: ["True"]
+        sha512_enabled: ["True", "False"]
         sha512_backend: ["Speed"]
         self_tests_enabled: ["True"]
         include:
+          # Test algorithms optimised for size
           - sha1_enabled: "True"
             sha256_enabled: "True"
             sha256_backend: "Size"
