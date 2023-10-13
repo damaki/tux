@@ -99,7 +99,10 @@ def get_alire_config_variables(alire_toml: Path) -> Dict[str, Dict[str, Any]]:
 
 
 def gen_alire_toml(
-    config: TuxConfig, tux_build_profile: str, coverage: bool, unit_tests_report_format: str
+    config: TuxConfig,
+    tux_build_profile: str,
+    coverage: bool,
+    unit_tests_report_format: str,
 ) -> str:
     """Generate an aggregate alire.toml crate with the specified Tux config."""
     test_projs = get_project_files()
@@ -151,7 +154,7 @@ def gen_alire_toml(
 
         [configuration.values]
         """
-        + "\n        ".join(f'tux.{name} = "{value}"' for name, value in config.items())
+        + "\n        ".join(f"tux.{name} = {value}" for name, value in config.items())
         + f"""\n        unit_tests.Report_Format = "{unit_tests_report_format}" """
     )
 
@@ -187,7 +190,9 @@ def create_test_config_crate(
         os.path.join(build_crate_dir, "alire.toml"), "w", encoding="utf8"
     ) as toml_file:
         toml_file.write(
-            gen_alire_toml(config, tux_build_profile, coverage, unit_tests_report_format)
+            gen_alire_toml(
+                config, tux_build_profile, coverage, unit_tests_report_format
+            )
         )
 
     with open(
@@ -204,14 +209,33 @@ def parse_args(tux_config_vars: Dict[str, Dict[str, Any]]):
     parser = argparse.ArgumentParser("Run the Tux test suites")
 
     for name in tux_config_vars.keys():
-        parser.add_argument(
-            f"--{name}".lower().replace("_", "-"),
-            type=str,
-            action="store",
-            choices=tux_config_vars[name]["values"],
-            default=tux_config_vars[name]["default"],
-            help=f"Crate configuration value to use for Tux.{name}",
-        )
+        var_type = tux_config_vars[name]["type"]
+        if var_type == "Enum":
+            parser.add_argument(
+                f"--{name}".lower().replace("_", "-"),
+                type=str,
+                action="store",
+                choices=tux_config_vars[name]["values"],
+                default=tux_config_vars[name]["default"],
+                help=f"Crate configuration value to use for Tux.{name}",
+            )
+        elif var_type == "Boolean":
+            parser.add_argument(
+                f"--{name}".lower().replace("_", "-"),
+                type=bool,
+                action="store",
+                default=tux_config_vars[name]["default"],
+                help=f"Crate configuration value to use for Tux.{name}",
+            )
+        else:
+            print(
+                (
+                    f"Unsupported crate configuration variable type '{var_type}' "
+                    f"for variable '{name}'"
+                ),
+                file=sys.stderr,
+            )
+            sys.exit(-1)
 
     parser.add_argument(
         "--coverage", action="store_true", help="Include dependency on GNATcoverage"
@@ -241,6 +265,19 @@ def parse_args(tux_config_vars: Dict[str, Dict[str, Any]]):
     return parser.parse_args()
 
 
+def config_value_repr(value, type):
+    """Get the string representation of a crate configuration value
+
+    Boolean types will have their value unquoted and lowercase. E.g. true and false.
+    Enum types will have their value quoted. E.g. "Size" and "Speed".
+
+    """
+    if type == "Boolean":
+        return str(value).lower()
+    else:
+        return f'"{value}"'
+
+
 def _main():
     tux_config_vars = get_alire_config_variables(_this_file_dir.parent / "alire.toml")
 
@@ -248,7 +285,8 @@ def _main():
 
     args_vars = vars(args)
     tux_config_values = {
-        name: args_vars[name.lower()] for name in tux_config_vars.keys()
+        name: config_value_repr(args_vars[name.lower()], tux_config_vars[name]["type"])
+        for name in tux_config_vars.keys()
     }
 
     create_test_config_crate(
