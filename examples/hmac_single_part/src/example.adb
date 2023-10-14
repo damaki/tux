@@ -11,7 +11,7 @@ with Tux.HMAC;
 with Tux.Types;
 
 procedure Example is
-   Algorithm : constant Tux.Hashing.Enabled_Algorithm_ID := Tux.Hashing.SHA256;
+   Alg : constant Tux.Hashing.Enabled_Algorithm_Kind := Tux.Hashing.SHA256;
    --  The hash algorithm used with HMAC in this example (SHA-256)
 
    Key : constant Tux.Types.Byte_Array (1 .. 32) := (others => 0);
@@ -21,12 +21,12 @@ procedure Example is
    --  Buffer containing the data to be authenticated
 
    Len : constant Tux.HMAC.HMAC_Length_Number :=
-           Tux.HMAC.HMAC_Length (Algorithm);
+           Tux.HMAC.HMAC_Length (Alg);
    --  Look up the length of the tag produced by HMAC-SHA-256 (32 bytes)
 
    MAC : Tux.Types.Byte_Array (1 .. Len);
    --  Buffer big enough to store the MAC
 
 begin
-   Tux.HMAC.Compute_HMAC (Algorithm, Key, Data, MAC);
+   Tux.HMAC.Compute_HMAC (Alg, Key, Data, MAC);
 end Example;
