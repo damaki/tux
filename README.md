@@ -5,8 +5,13 @@ resource-constrained embedded systems. The library is written using the SPARK
 programming language with proof of absence of common runtime errors and some
 functional correctness properties.
 
-> :warning: Tux is currently in early development. Its API is considered
-> unstable and breaking changes may be made at any time.
+## Project Status
+
+Tux is currently in the initial project setup phase. A small number of
+cryptographic primitives have already been implemented, but the documentation
+and verification processes are not yet fully set up. The API is considered
+unstable until the 1.0.0 release and breaking changes are likely until then.
+
 
 ## Supported Primitives
 
@@ -23,12 +28,14 @@ There are already several cryptographic libraries for embedded systems,
 so why make another one?
 
 I've used various crypto libraries on several resource-constrained embedded
-system projects (with as little as a few tens of kilobytes of memory).
+projects with as little as a few tens of kilobytes of memory.
 While some crypto libraries met my requirements better than others, there were
 some aspects to their design that complicated their use in my projects,
 for example:
+ * use of unsafe programming languages (C in particular).
  * use of dynamic memory allocation, which increased memory requirements
-   and added complexity and extra failure scenarios (e.g. out-of-memory conditions).
+   and added complexity and extra failure scenarios (e.g. out-of-memory
+   conditions).
  * difficulty in taking advantage of hardware crypto acceleration without
    modifying the library sources, which required the additional burden of
    maintaining patches to keep the library up to date.
@@ -36,29 +43,50 @@ for example:
    to tune the library for the project's needs, such as trading off speed
    against code size.
 
-### Objectives
+This project aims to address these issues and more.
 
-This project is an attempt to design a high-assurance crypto library that
-meets these objectives:
+## Objectives
 
-* The library is written in the SPARK programming language with a formal
-  proof that the library contains no run-time errors that could lead to
-  security vulnerabilities, for example buffer overflows.
-* The library provides bindings to other languages, such as C.
-* The library has a small code footprint.
-* The library has competitive performance compared to other similar libraries.
-* The library can be used in "bare metal" environments with little (or no)
-  standard library support. In particular, the library does not use dynamic
-  memory (heap) allocation nor the secondary stack.
-* The library can be configured to trade off between speed, code size, and
-  other attributes depending on the user's requirements. Unused parts of the
-  library can be disabled to reduce code size.
-* The API supports multi-part operations to allow large messages to be
-  processed in small fragments, instead of requiring the entire message in
-  one (potentially large) buffer.
-* The library is amenable to static stack analysis.
-* Users can easily extend this crate to replace parts of the library with hardware
-  accelerated implementations.
+### Assurance
+
+The library is written in the SPARK programming language with a formal
+proof that the library contains no run-time errors or undefined behaviours that
+could lead to security vulnerabilities such as buffer overruns, integer
+overflow, etc.
+
+The library has an extensive automated test suite to verify its correctness
+for things that are not covered by proof.
+
+### Configurability
+
+The library can be configured to disable unused algorithms (thereby saving code
+space) and to select different implementations of cryptographic primitives to,
+for example, trade off between performance and code size.
+
+### Usability
+
+The library has an easy to use API and provides bindings to other languages
+such as C. In particular, the library supports multi-part operations to allow
+large messages to be processed in small fragments, instead of requiring the
+entire message to be processed in a single (potentially very large) buffer.
+
+### Performance
+
+The library has competitive performance compared to other similar libraries
+and with a small code footprint.
+
+### Embedded Systems
+
+The library is designed to be usable in resource-constrained embedded systems.
+In particular:
+* The library can be run in "bare metal" environments with little (or no)
+  standard library support.
+* The library does not use heap allocation nor the secondary stack.
+* The library is amenable to static stack analysis to determine the worst-case
+  stack usage.
+* Users can easily extend this crate to replace parts of the library with
+  hardware accelerated implementations without needing to modify the crate
+  itself.
 
 ## Using Tux
 
@@ -116,7 +144,7 @@ variables supported by Tux are:
     <td><tt>"Speed"</tt></td>
     <td>
       Configures the SHA-256 and SHA-224 backend.
-      This variable has no effect when `SHA256_Enabled` is `false`.
+      This variable has no effect when <tt>SHA256_Enabled</tt> is <tt>false</tt>.
       <ul>
         <li><tt>"Speed"</tt> selects the implementation optimised for speed.</li>
         <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li>
@@ -143,7 +171,7 @@ variables supported by Tux are:
     <td><tt>"Speed"</tt></td>
     <td>
       Configures the SHA-512, SHA-384, SHA-512/224, and SHA-512/256 backend.
-      This variable has no effect when `SHA512_Enabled` is `false`.
+      This variable has no effect when <tt>SHA512_Enabled</tt> is <tt>false</tt>.
       <ul>
         <li><tt>"Speed"</tt> selects the implementation optimised for speed.</li>
         <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li></li>
