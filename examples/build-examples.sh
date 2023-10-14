@@ -9,6 +9,7 @@ set -x
 for subdir in $(find . -mindepth 1 -maxdepth 1 -type d)
 do
     cd $subdir
-    alr build
+    # Build in validation mode to enable style checking
+    alr build --validation
     cd ..
 done
