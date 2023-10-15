@@ -17,10 +17,20 @@ jobs:
         with:
           version: 1.2.0
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Test Dependencies
+        run: |
+          pip install -r tests/requirements.txt
+
       # Generate the proofs
       # Note that this is likely to take a fairly long time on a dual-core CI
       # runner, so this workflow is triggered manually as needed.
       - name: Prove
         run: |
-          cd prove
-          alr exec -- gnatprove -P ../tux.gpr
+          cd tests
+          python make_build_crate.py --output-dir=test_crate --prove
+          cd test_crate
+          alr exec -- gnatprove -P ../../tux.gpr

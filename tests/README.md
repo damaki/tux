@@ -53,3 +53,20 @@ run_tests_coverage.sh test_crate
 ```
 
 The GNATcoverage HTML report will be generated in `test_crate/coverage_html/`.
+
+## Running the Proofs
+
+To run the proofs use `make_build_crate.py` to setup a crate with the desired
+configuration then use Alire to run GNATprove. For example, to run the proofs
+over the default library configuration:
+```sh
+python make_build_crate.py --output-dir test_crate --prove
+cd test_crate
+alr exec -- gnatprove -P ../../tux.gpr
+```
+
+Just like with the tests, the proofs can be run over different library
+configurations:
+```sh
+python make_build_crate.py --output-dir test_crate --prove --sha256-backend=Size --sha1-enabled=False
+```

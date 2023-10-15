@@ -1,31 +1,7 @@
 #!/usr/bin/python3
 
-"""Script to run the Tux test suites and generate test reports
-
-This script automates running the Tux test suites with different library
-configurations. The configurations to test are specified on the command line.
-For example, --sha256-backend=Size,Speed will run the test suite two times with
-the "Size" and "Speed" SHA-256 backends respectively. See --help for a full
-list of options.
-
-All combinations of the supplied configuration values are tested. For example,
-passing --sha256-backend=Size,Speed,Disabled and --sha512-backend=Size,Speed
-will cause the test suite to be run six times; once for each permutation.
-
-Each test run executes the following steps:
- 1. Generate an alire.toml and GPR file which aggregates the various test suite
-    crates, combined with the specific configuration values that should be tested.
- 2. Build the test suite.
- 3. If coverage is enabled:
-    a. Run GNATcoverage to instrument the test suite
-    b. Run the instrumented tests
-    c. Generate a GNATcoverage report
- 4. If coverage is disabled:
-    a. Run the tests
- 5. Generate an HTML report to summarise the test results
-
-The results of each test run are stored in the directory specified by --output
-(the default is "test_results")
+"""Generate an Alire manifest and GPR file to aggregate the test suite
+under a specific configuration.
 """
 
 import argparse
@@ -102,6 +78,7 @@ def gen_alire_toml(
     config: TuxConfig,
     tux_build_profile: str,
     coverage: bool,
+    prove: bool,
     unit_tests_report_format: str,
 ) -> str:
     """Generate an aggregate alire.toml crate with the specified Tux config."""
@@ -115,8 +92,9 @@ def gen_alire_toml(
     # also built in release mode.
     test_proj_build_profile["benchmark"] = tux_build_profile
 
-    # Only include gnatcov dependency if we're building with coverage on
+    # Only include these dependencies when requested to minimise setup time
     gnatcov_dep = 'gnatcov = "^22.0.1"' if coverage else ""
+    gnatprove_dep = 'gnatprove = "=12.1.1"' if prove else ""
 
     return textwrap.dedent(
         f"""
@@ -132,6 +110,7 @@ def gen_alire_toml(
         tux = "*"
         unit_tests = "*"
         {gnatcov_dep}
+        {gnatprove_dep}
 
         [[pins]]
         tux = {{ path = "{escaped_abs_path(_this_file_dir.parent)}" }}
@@ -176,6 +155,7 @@ def create_test_config_crate(
     config: TuxConfig,
     tux_build_profile: str,
     coverage: bool,
+    prove: bool,
     unit_tests_report_format: str,
 ) -> None:
     """Create a test configuration crate in the specified directory.
@@ -191,7 +171,7 @@ def create_test_config_crate(
     ) as toml_file:
         toml_file.write(
             gen_alire_toml(
-                config, tux_build_profile, coverage, unit_tests_report_format
+                config, tux_build_profile, coverage, prove, unit_tests_report_format
             )
         )
 
@@ -240,6 +220,9 @@ def parse_args(tux_config_vars: Dict[str, Dict[str, Any]]):
 
     parser.add_argument(
         "--coverage", action="store_true", help="Include dependency on GNATcoverage"
+    )
+    parser.add_argument(
+        "--prove", action="store_true", help="Include dependency on GNATprove"
     )
     parser.add_argument(
         "--tux-build-profile",
@@ -295,6 +278,7 @@ def _main():
         config=tux_config_values,
         tux_build_profile=args.tux_build_profile,
         coverage=args.coverage,
+        prove=args.prove,
         unit_tests_report_format=args.unit_tests_report_format,
     )
 
