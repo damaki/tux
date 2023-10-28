@@ -9,6 +9,7 @@ with Tux.Types;  use Tux.Types;
 with Tux.SHA1;
 with Tux.SHA256;
 with Tux.SHA512;
+with Tux.SHA3;
 
 --  @summary
 --  Wrapper around hash functions.
@@ -35,7 +36,11 @@ is
       SHA384,     --  SHA-384
       SHA512,     --  SHA-512
       SHA512_224, --  SHA-512/224
-      SHA512_256  --  SHA-512/256
+      SHA512_256, --  SHA-512/256
+      SHA3_224,   --  SHA3-224
+      SHA3_256,   --  SHA3-256
+      SHA3_384,   --  SHA3-384
+      SHA3_512    --  SHA3-512
      );
    --  The set of hash algorithms that are supported in this package.
    --
@@ -56,6 +61,9 @@ is
    SHA512_Disabled : constant Boolean := not Tux_Config.SHA512_Enabled;
    --  @private
 
+   SHA3_Disabled : constant Boolean := not Tux_Config.SHA3_Enabled;
+   --  @private
+
    pragma Warnings
      (Off, "predicate is redundant",
       Reason => "Predicate depends on the crate configuration");
@@ -67,7 +75,10 @@ is
         (if SHA256_Disabled then Enabled_Algorithm_Kind not in SHA224 | SHA256)
         and
         (if SHA512_Disabled then Enabled_Algorithm_Kind not in
-                                   SHA384 | SHA512 | SHA512_224 | SHA512_256));
+                                   SHA384 | SHA512 | SHA512_224 | SHA512_256)
+        and
+        (if SHA3_Disabled then Enabled_Algorithm_Kind not in
+                                 SHA3_224 | SHA3_256 | SHA3_384 | SHA3_512));
    --  The set of hash algorithms that are enabled in the crate configuration.
    --
    --  The predicate on this type prohibits all hash algorithms that are
@@ -82,7 +93,7 @@ is
    subtype Hash_Length_Number  is Byte_Count range 20 .. 64;
    --  Represents the length of the hashes output by a hash function
 
-   subtype Block_Length_Number is Byte_Count range 64 .. 128;
+   subtype Block_Length_Number is Byte_Count range 56 .. 144;
    --  Represents the block size of a hash function
 
    type Hash_Length_Table  is array (Algorithm_Kind) of Hash_Length_Number;
@@ -98,7 +109,11 @@ is
       SHA384     => Tux.SHA512.SHA384_Hash_Length,
       SHA512     => Tux.SHA512.SHA512_Hash_Length,
       SHA512_224 => Tux.SHA512.SHA512_224_Hash_Length,
-      SHA512_256 => Tux.SHA512.SHA512_256_Hash_Length);
+      SHA512_256 => Tux.SHA512.SHA512_256_Hash_Length,
+      SHA3_224   => Tux.SHA3.SHA3_224_Hash_Length,
+      SHA3_256   => Tux.SHA3.SHA3_256_Hash_Length,
+      SHA3_384   => Tux.SHA3.SHA3_384_Hash_Length,
+      SHA3_512   => Tux.SHA3.SHA3_512_Hash_Length);
    --  Lookup table of the hash lengths of each hash algorithm
 
    Block_Length : constant Block_Length_Table :=
@@ -108,7 +123,11 @@ is
       SHA384     => Tux.SHA512.Block_Length,
       SHA512     => Tux.SHA512.Block_Length,
       SHA512_224 => Tux.SHA512.Block_Length,
-      SHA512_256 => Tux.SHA512.Block_Length);
+      SHA512_256 => Tux.SHA512.Block_Length,
+      SHA3_224   => Tux.SHA3.SHA3_224_Block_Length,
+      SHA3_256   => Tux.SHA3.SHA3_256_Block_Length,
+      SHA3_384   => Tux.SHA3.SHA3_384_Block_Length,
+      SHA3_512   => Tux.SHA3.SHA3_512_Block_Length);
    --  Lookup table of the block size of each hash algorithm
 
    ---------------------------
@@ -254,17 +273,15 @@ private
             SHA512_224_Ctx : Tux.SHA512.Context (Tux.SHA512.SHA512_224);
          when SHA512_256 =>
             SHA512_256_Ctx : Tux.SHA512.Context (Tux.SHA512.SHA512_256);
+         when SHA3_224 =>
+            SHA3_224_Ctx : Tux.SHA3.Context (Tux.SHA3.SHA3_224);
+         when SHA3_256 =>
+            SHA3_256_Ctx : Tux.SHA3.Context (Tux.SHA3.SHA3_256);
+         when SHA3_384 =>
+            SHA3_384_Ctx : Tux.SHA3.Context (Tux.SHA3.SHA3_384);
+         when SHA3_512 =>
+            SHA3_512_Ctx : Tux.SHA3.Context (Tux.SHA3.SHA3_512);
       end case;
    end record;
-
-   function Finished (Ctx : Context) return Boolean is
-     (case Ctx.Algorithm is
-         when SHA1       => Tux.SHA1.Finished (Ctx.SHA1_Ctx),
-         when SHA224     => Tux.SHA256.Finished (Ctx.SHA224_Ctx),
-         when SHA256     => Tux.SHA256.Finished (Ctx.SHA256_Ctx),
-         when SHA384     => Tux.SHA512.Finished (Ctx.SHA384_Ctx),
-         when SHA512     => Tux.SHA512.Finished (Ctx.SHA512_Ctx),
-         when SHA512_224 => Tux.SHA512.Finished (Ctx.SHA512_224_Ctx),
-         when SHA512_256 => Tux.SHA512.Finished (Ctx.SHA512_256_Ctx));
 
 end Tux.Hashing;

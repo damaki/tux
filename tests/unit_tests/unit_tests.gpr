@@ -7,6 +7,7 @@ project Unit_Tests is
       "src/sha1",
       "src/sha256",
       "src/sha512",
+      "src/sha3",
       "src/" & Unit_Tests_Config.Report_Format,
       "config/");
    for Object_Dir use "obj/" & Unit_Tests_Config.Build_Profile;
@@ -22,9 +23,11 @@ project Unit_Tests is
    SHA1_Self_Tests_Backend := "";
    SHA256_Self_Tests_Backend := "";
    SHA512_Self_Tests_Backend := "";
+   SHA3_Self_Tests_Backend := "";
    SHA1_Backend := "";
    SHA256_Backend := "";
    SHA512_Backend := "";
+   SHA3_Backend := "";
 
    case Tux_Config.Self_Tests_Enabled is
       when "True" =>
@@ -49,10 +52,18 @@ project Unit_Tests is
                SHA512_Self_Tests_Backend := "enabled";
          end case;
 
-      when "False" =>
+         case Tux_Config.SHA3_Enabled is
+            when "False" =>
+               SHA3_Self_Tests_Backend := "disabled";
+            when others =>
+               SHA3_Self_Tests_Backend := "enabled";
+         end case;
+
+      when others =>
          SHA1_Self_Tests_Backend   := "disabled";
          SHA256_Self_Tests_Backend := "disabled";
          SHA512_Self_Tests_Backend := "disabled";
+         SHA3_Self_Tests_Backend   := "disabled";
    end case;
 
    case Tux_Config.SHA1_Enabled is
@@ -76,16 +87,26 @@ project Unit_Tests is
          SHA512_Backend := "enabled";
    end case;
 
+   case Tux_Config.SHA3_Enabled is
+      when "False" =>
+         SHA3_Backend := "disabled";
+      when others =>
+         SHA3_Backend := "enabled";
+   end case;
+
    package Naming is
-      for Body ("SHA1_Self_Tests")   use "sha1_self_tests__" & SHA1_Self_Tests_Backend & ".adb";
-      for Body ("SHA256_Self_Tests") use "sha256_self_tests__" & SHA256_Self_Tests_Backend & ".adb";
-      for Body ("SHA512_Self_Tests") use "sha512_self_tests__" & SHA512_Self_Tests_Backend & ".adb";
-      for Body ("HMAC_SHA1_Tests")   use "hmac_sha1_tests__" & SHA1_Backend &".adb";
-      for Body ("HMAC_SHA256_Tests") use "hmac_sha256_tests__" & SHA256_Backend &".adb";
-      for Body ("HMAC_SHA512_Tests") use "hmac_sha512_tests__" & SHA512_Backend &".adb";
-      for Body ("SHA1_Tests")        use "sha1_tests__" & SHA1_Backend &".adb";
-      for Body ("SHA256_Tests")      use "sha256_tests__" & SHA256_Backend &".adb";
-      for Body ("SHA512_Tests")      use "sha512_tests__" & SHA512_Backend &".adb";
+      for Body ("SHA1_Self_Tests")     use "sha1_self_tests__" & SHA1_Self_Tests_Backend & ".adb";
+      for Body ("SHA256_Self_Tests")   use "sha256_self_tests__" & SHA256_Self_Tests_Backend & ".adb";
+      for Body ("SHA512_Self_Tests")   use "sha512_self_tests__" & SHA512_Self_Tests_Backend & ".adb";
+      for Body ("SHA3_Self_Tests")     use "sha3_self_tests__" & SHA3_Self_Tests_Backend & ".adb";
+      for Body ("HMAC_SHA1_Tests")     use "hmac_sha1_tests__" & SHA1_Backend &".adb";
+      for Body ("HMAC_SHA256_Tests")   use "hmac_sha256_tests__" & SHA256_Backend &".adb";
+      for Body ("HMAC_SHA512_Tests")   use "hmac_sha512_tests__" & SHA512_Backend &".adb";
+      for Body ("HMAC_SHA3_Tests")     use "hmac_sha3_tests__" & SHA3_Backend &".adb";
+      for Body ("SHA1_Tests")          use "sha1_tests__" & SHA1_Backend &".adb";
+      for Body ("SHA256_Tests")        use "sha256_tests__" & SHA256_Backend &".adb";
+      for Body ("SHA512_Tests")        use "sha512_tests__" & SHA512_Backend &".adb";
+      for Body ("SHA3_Tests")          use "sha3_tests__" & SHA3_Backend &".adb";
       for Body ("SHA512_Length_Tests") use "sha512_length_tests__" & SHA512_Backend &".adb";
    end Naming;
 

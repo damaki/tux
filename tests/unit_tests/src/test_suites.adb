@@ -12,10 +12,13 @@ with SHA256_Self_Tests;
 with SHA512_Tests;
 with SHA512_Self_Tests;
 with SHA512_Length_Tests;
+with SHA3_Tests;
+with SHA3_Self_Tests;
 
 with HMAC_SHA1_Tests;
 with HMAC_SHA256_Tests;
 with HMAC_SHA512_Tests;
+with HMAC_SHA3_Tests;
 
 with HKDF_Tests;
 
@@ -33,9 +36,12 @@ is
       S.Add_Test (SHA256_Tests.Suite);
       S.Add_Test (SHA512_Tests.Suite);
       S.Add_Test (SHA512_Length_Tests.Suite);
+      S.Add_Test (SHA3_Tests.Suite);
+      S.Add_Test (SHA3_Self_Tests.Suite);
       S.Add_Test (HMAC_SHA1_Tests.Suite);
       S.Add_Test (HMAC_SHA256_Tests.Suite);
       S.Add_Test (HMAC_SHA512_Tests.Suite);
+      S.Add_Test (HMAC_SHA3_Tests.Suite);
       S.Add_Test (HKDF_Tests.Suite);
 
       return S;

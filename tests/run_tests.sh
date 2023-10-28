@@ -6,12 +6,14 @@ set -e
 # Echo commands as they are executed
 set -x
 
+test_crate_dir=$1
+
 # Run KAT suite
 pytest kat \
     -n logical \
-    --html=kat_report.html \
+    --html="$test_crate_dir/kat_report.html" \
     --self-contained-html \
-    --junitxml=kat.xml
+    --junitxml="$test_crate_dir/kat.xml"
 
 # Run the unit tests
 unit_tests/bin/unit_tests
