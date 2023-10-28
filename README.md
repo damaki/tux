@@ -19,6 +19,7 @@ Tux currently supports the following cryptographic primitives:
  * Hash functions:
    * SHA-1
    * SHA-2 (SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256)
+   * SHA-3 (SHA3-224, SHA3-256, SHA3-384, SHA3-512)
  * Keyed-Hash Message Authentication Code (HMAC)
  * HMAC-based Extract-and-Expand Key Derivation Function (HKDF)
 
