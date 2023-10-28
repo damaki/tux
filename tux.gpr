@@ -57,10 +57,12 @@ project Tux is
    --  Configure SHA-3 source directories based on the selected implementation
 
    SHA3_Dirs := ();
+   SHA3_Self_Test_Dirs := ();
    case Tux_Config.SHA3_Enabled is
       when "True" =>
          Keccak_Enabled      := "True";
          SHA3_Dirs           := ("src/spark/sha3/enabled");
+         SHA3_Self_Test_Dirs := ("src/spark/sha3/self_test");
       when others =>
          SHA3_Dirs           := ("src/spark/sha3/disabled");
    end case;
@@ -82,7 +84,8 @@ project Tux is
       when "True" =>
          Self_Test_Dirs := SHA1_Self_Test_Dirs &
                            SHA256_Self_Test_Dirs &
-                           SHA512_Self_Test_Dirs;
+                           SHA512_Self_Test_Dirs &
+                           SHA3_Self_Test_Dirs;
       when others => null;
    end case;
 
