@@ -4,6 +4,8 @@ project Tux is
    for Library_Name use "tux";
    for Library_Version use Project'Library_Name & ".so." & Tux_Config.Crate_Version;
 
+   Keccak_Enabled := Tux_Config.Keccak_Enabled;
+
    --  Configure SHA-1 source directories based on the selected implementation
 
    SHA1_Dirs := ();
@@ -52,6 +54,27 @@ project Tux is
          SHA512_Dirs           := ("src/spark/sha512/disabled");
    end case;
 
+   --  Configure SHA-3 source directories based on the selected implementation
+
+   SHA3_Dirs := ();
+   case Tux_Config.SHA3_Enabled is
+      when "True" =>
+         Keccak_Enabled      := "True";
+         SHA3_Dirs           := ("src/spark/sha3/enabled");
+      when others =>
+         SHA3_Dirs           := ("src/spark/sha3/disabled");
+   end case;
+
+   --  Configure Keccak source directories based on the selected implementation
+
+   Keccak_Dirs := ();
+   case Keccak_Enabled is
+      when "True" =>
+         Keccak_Dirs := ("src/spark/keccak");
+      when others =>
+         Keccak_Dirs := (); --  No stubs needed for Keccak
+   end case;
+
    --  Add self test directories when enabled
 
    Self_Test_Dirs := ();
@@ -67,6 +90,8 @@ project Tux is
                        SHA1_Dirs &
                        SHA256_Dirs &
                        SHA512_Dirs &
+                       Keccak_Dirs &
+                       SHA3_Dirs &
                        Self_Test_Dirs;
    for Object_Dir use "obj/" & Tux_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
@@ -80,11 +105,8 @@ project Tux is
    package Compiler is
       for Default_Switches ("Ada") use Tux_Config.Ada_Compiler_Switches &
                                        ("-fcallgraph-info=su",
-                                        "-fstack-usage");
-      for Switches ("tux-hmac.adb") use Tux_Config.Ada_Compiler_Switches &
-                                       ("-fcallgraph-info=su",
                                         "-fstack-usage",
-                                        "-gnatH");
+                                        "-funroll-loops");
 
       case Tux_Config.Build_Profile is
 
@@ -108,7 +130,9 @@ project Tux is
    end Install;
 
    package Prove is
-      for Proof_Switches ("Ada") use ("--proof=per_path",
+      for Proof_Switches ("Ada") use ("--proof=progressive",
+                                      "--no-loop-unrolling",
+                                      "--no-inlining",
                                       "-j0",
                                       "--prover=all",
                                       "--timeout=60",

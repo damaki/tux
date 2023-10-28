@@ -34,6 +34,18 @@ is
 
          when SHA512_256 =>
             Tux.SHA512.Initialize (Ctx.SHA512_256_Ctx);
+
+         when SHA3_224 =>
+            Tux.SHA3.Initialize (Ctx.SHA3_224_Ctx);
+
+         when SHA3_256 =>
+            Tux.SHA3.Initialize (Ctx.SHA3_256_Ctx);
+
+         when SHA3_384 =>
+            Tux.SHA3.Initialize (Ctx.SHA3_384_Ctx);
+
+         when SHA3_512 =>
+            Tux.SHA3.Initialize (Ctx.SHA3_512_Ctx);
       end case;
    end Initialize;
 
@@ -64,6 +76,18 @@ is
 
          when SHA512_256 =>
             Tux.SHA512.Sanitize (Ctx.SHA512_256_Ctx);
+
+         when SHA3_224 =>
+            Tux.SHA3.Sanitize (Ctx.SHA3_224_Ctx);
+
+         when SHA3_256 =>
+            Tux.SHA3.Sanitize (Ctx.SHA3_256_Ctx);
+
+         when SHA3_384 =>
+            Tux.SHA3.Sanitize (Ctx.SHA3_384_Ctx);
+
+         when SHA3_512 =>
+            Tux.SHA3.Sanitize (Ctx.SHA3_512_Ctx);
       end case;
    end Sanitize;
 
@@ -97,6 +121,18 @@ is
 
          when SHA512_256 =>
             Tux.SHA512.Update (Ctx.SHA512_256_Ctx, Data);
+
+         when SHA3_224 =>
+            Tux.SHA3.Update (Ctx.SHA3_224_Ctx, Data);
+
+         when SHA3_256 =>
+            Tux.SHA3.Update (Ctx.SHA3_256_Ctx, Data);
+
+         when SHA3_384 =>
+            Tux.SHA3.Update (Ctx.SHA3_384_Ctx, Data);
+
+         when SHA3_512 =>
+            Tux.SHA3.Update (Ctx.SHA3_512_Ctx, Data);
       end case;
    end Update;
 
@@ -130,6 +166,18 @@ is
 
          when SHA512_256 =>
             Tux.SHA512.Finish (Ctx.SHA512_256_Ctx, Hash);
+
+         when SHA3_224 =>
+            Tux.SHA3.Finish (Ctx.SHA3_224_Ctx, Hash);
+
+         when SHA3_256 =>
+            Tux.SHA3.Finish (Ctx.SHA3_256_Ctx, Hash);
+
+         when SHA3_384 =>
+            Tux.SHA3.Finish (Ctx.SHA3_384_Ctx, Hash);
+
+         when SHA3_512 =>
+            Tux.SHA3.Finish (Ctx.SHA3_512_Ctx, Hash);
       end case;
    end Finish;
 
@@ -190,6 +238,18 @@ is
 
          when SHA512_256 =>
             Tux.SHA512.Compute_Hash (Tux.SHA512.SHA512_256, Data, Hash);
+
+         when SHA3_224 =>
+            Tux.SHA3.Compute_Hash (Tux.SHA3.SHA3_224, Data, Hash);
+
+         when SHA3_256 =>
+            Tux.SHA3.Compute_Hash (Tux.SHA3.SHA3_256, Data, Hash);
+
+         when SHA3_384 =>
+            Tux.SHA3.Compute_Hash (Tux.SHA3.SHA3_384, Data, Hash);
+
+         when SHA3_512 =>
+            Tux.SHA3.Compute_Hash (Tux.SHA3.SHA3_512, Data, Hash);
       end case;
    end Compute_Hash;
 
@@ -231,7 +291,41 @@ is
          when SHA512_256 =>
             return Tux.SHA512.Verify_Hash
               (Tux.SHA512.SHA512_256, Data, Expected_Hash);
+
+         when SHA3_224 =>
+            return Tux.SHA3.Verify_Hash
+              (Tux.SHA3.SHA3_224, Data, Expected_Hash);
+
+         when SHA3_256 =>
+            return Tux.SHA3.Verify_Hash
+              (Tux.SHA3.SHA3_256, Data, Expected_Hash);
+
+         when SHA3_384 =>
+            return Tux.SHA3.Verify_Hash
+              (Tux.SHA3.SHA3_384, Data, Expected_Hash);
+
+         when SHA3_512 =>
+            return Tux.SHA3.Verify_Hash
+              (Tux.SHA3.SHA3_512, Data, Expected_Hash);
       end case;
    end Verify_Hash;
+
+   --------------
+   -- Finished --
+   --------------
+
+   function Finished (Ctx : Context) return Boolean is
+     (case Ctx.Algorithm is
+         when SHA1       => Tux.SHA1.Finished (Ctx.SHA1_Ctx),
+         when SHA224     => Tux.SHA256.Finished (Ctx.SHA224_Ctx),
+         when SHA256     => Tux.SHA256.Finished (Ctx.SHA256_Ctx),
+         when SHA384     => Tux.SHA512.Finished (Ctx.SHA384_Ctx),
+         when SHA512     => Tux.SHA512.Finished (Ctx.SHA512_Ctx),
+         when SHA512_224 => Tux.SHA512.Finished (Ctx.SHA512_224_Ctx),
+         when SHA512_256 => Tux.SHA512.Finished (Ctx.SHA512_256_Ctx),
+         when SHA3_224   => Tux.SHA3.Finished (Ctx.SHA3_224_Ctx),
+         when SHA3_256   => Tux.SHA3.Finished (Ctx.SHA3_256_Ctx),
+         when SHA3_384   => Tux.SHA3.Finished (Ctx.SHA3_384_Ctx),
+         when SHA3_512   => Tux.SHA3.Finished (Ctx.SHA3_512_Ctx));
 
 end Tux.Hashing;

@@ -44,11 +44,19 @@ is
          Hashing.Update (Ctx.Outer_Ctx, Key);
          Hashing.Finish (Ctx.Outer_Ctx, Block (1 .. Hash_Length));
 
+         pragma Assert_And_Cut
+           (Ctx.Inner_Ctx.Algorithm = Ctx.Outer_Ctx.Algorithm
+            and Block (1 .. Hash_Length)'Initialized);
+
          Block (Hash_Length + 1 .. Block'Last) := (others => 0);
       else
          Block (1 .. Key'Length)              := Key;
          Block (Key'Length + 1 .. Block'Last) := (others => 0);
       end if;
+
+      pragma Assert_And_Cut
+        (Ctx.Inner_Ctx.Algorithm = Ctx.Outer_Ctx.Algorithm
+         and Block'Initialized);
 
       --  Key' xor opad
 
@@ -64,6 +72,11 @@ is
 
       Hashing.Initialize (Ctx.Outer_Ctx);
       Hashing.Update (Ctx.Outer_Ctx, Block);
+
+      pragma Assert_And_Cut
+        (Ctx.Inner_Ctx.Algorithm = Ctx.Outer_Ctx.Algorithm
+         and Block'Initialized
+         and not Hashing.Finished (Ctx.Outer_Ctx));
 
       --  Key' xor ipad
 
@@ -156,6 +169,10 @@ is
    begin
       Hashing.Sanitize (Ctx.Inner_Ctx);
       Hashing.Sanitize (Ctx.Outer_Ctx);
+
+      pragma Assert_And_Cut
+        (Hashing.Finished (Ctx.Inner_Ctx)
+         and Hashing.Finished (Ctx.Outer_Ctx));
    end Sanitize;
 
    ------------------
