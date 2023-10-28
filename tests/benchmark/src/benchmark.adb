@@ -10,12 +10,13 @@ with Tux.Types;
 with Tux.Hashing;
 with Tux.HMAC;
 with Tux.HKDF;
+with Tux.Keccak_1600;
 
 with Support.Timing;
 
 procedure Benchmark is
 
-   Num_Repetitions : constant Positive := 100;
+   Num_Repetitions : constant Positive := 200;
    Data_Size       : constant Positive := 1 * 1024 * 1024;
 
    procedure Print_Cycles_Per_Byte
@@ -33,6 +34,20 @@ procedure Benchmark is
    procedure Benchmark_HKDF
      (Buffer    : in out Tux.Types.Byte_Array;
       Algorithm :        Tux.Hashing.Algorithm_Kind);
+
+   generic
+      Name : String;
+
+      type Permutation_State is private;
+      type Round_Count is range <>;
+      Num_Rounds : Round_Count;
+
+      with procedure Initialize (State : out Permutation_State);
+
+      with procedure Permute
+        (State      : in out Permutation_State;
+         Num_Rounds :        Round_Count);
+   procedure Benchmark_Permutation;
 
    ---------------------------
    -- Print_Cycles_Per_Byte --
@@ -213,6 +228,62 @@ procedure Benchmark is
       Print_Cycles_Per_Byte (OKM_Length, Min_Elapsed);
    end Benchmark_HKDF;
 
+   ---------------------------
+   -- Benchmark_Permutation --
+   ---------------------------
+
+   procedure Benchmark_Permutation is
+      use type Support.Timing.Cycles_Count;
+
+      State : Permutation_State;
+
+      T       : Support.Timing.Time;
+      Elapsed : Support.Timing.Cycles_Count;
+
+      Min_Elapsed : Support.Timing.Cycles_Count :=
+        Support.Timing.Cycles_Count'Last;
+   begin
+
+      Initialize (State);
+
+      Support.Timing.Calibrate;
+
+      for I in Integer range 1 .. Num_Repetitions loop
+         Support.Timing.Start_Measurement (T);
+         Permute (State, Num_Rounds);
+         Elapsed := Support.Timing.End_Measurement (T);
+
+         if Elapsed < Min_Elapsed then
+            Min_Elapsed := Elapsed;
+         end if;
+      end loop;
+
+      Ada.Text_IO.Put (Name);
+      Ada.Text_IO.Put (":");
+      Ada.Text_IO.Put (Support.Timing.Cycles_Count'Image (Min_Elapsed));
+      Ada.Text_IO.Put_Line (" cycles");
+   end Benchmark_Permutation;
+
+   --------------------
+   -- Instantiations --
+   --------------------
+
+   procedure Benchmark_Keccak_1600_24 is new Benchmark_Permutation
+     (Name              => "Keccak-p[1600, 24]",
+      Permutation_State => Tux.Keccak_1600.Context,
+      Round_Count       => Tux.Keccak_1600.Round_Count,
+      Num_Rounds        => 24,
+      Initialize        => Tux.Keccak_1600.Initialize,
+      Permute           => Tux.Keccak_1600.Permute);
+
+   procedure Benchmark_Keccak_1600_12 is new Benchmark_Permutation
+     (Name              => "Keccak-p[1600, 12]",
+      Permutation_State => Tux.Keccak_1600.Context,
+      Round_Count       => Tux.Keccak_1600.Round_Count,
+      Num_Rounds        => 12,
+      Initialize        => Tux.Keccak_1600.Initialize,
+      Permute           => Tux.Keccak_1600.Permute);
+
    type Byte_Array_Access is access Tux.Types.Byte_Array;
 
    Data_Chunk : constant Byte_Array_Access :=
@@ -244,7 +315,9 @@ begin
          Benchmark_HKDF (Data_Chunk.all (1 .. Length), Algorithm);
       end loop;
       Ada.Text_IO.New_Line;
-
    end loop;
+
+   Benchmark_Keccak_1600_24;
+   Benchmark_Keccak_1600_12;
 
 end Benchmark;
