@@ -18,9 +18,9 @@ cd $test_crate_dir/srctraces
 # Run KAT suite
 pytest $kat_dir \
     -n logical \
-    --html=kat_report.html \
+    --html="$test_crate_dir/kat_report.html" \
     --self-contained-html \
-    --junitxml=kat.xml
+    --junitxml="$test_crate_dir/kat.xml"
 
 # Run the unit tests
 $unit_tests_exe
@@ -31,5 +31,5 @@ cd ..
 find . -type f -name "*.srctrace" > srctraces_list.txt
 
 # Generate the coverage reports
-alr gnatcov coverage --annotate=html --output-dir=coverage_html --level=stmt+mcdc --projects tux.gpr @srctraces_list.txt
+alr gnatcov coverage --annotate=html+ --output-dir=coverage_html --level=stmt+mcdc --projects tux.gpr @srctraces_list.txt
 alr gnatcov coverage --annotate=xcov+ --output-dir=coverage_html --level=stmt+mcdc --projects tux.gpr @srctraces_list.txt

@@ -119,3 +119,19 @@ def test_hmac_wycheproof_sha384(test_vector):
 @loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hmac_sha512_test.json")
 def test_hmac_wycheproof_sha512(test_vector):
     run_wycheproof_test("SHA512", test_vector)
+
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hmac_sha3_224_test.json")
+def test_hmac_wycheproof_sha3_224(test_vector):
+    run_wycheproof_test("SHA3_224", test_vector)
+
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hmac_sha3_256_test.json")
+def test_hmac_wycheproof_sha3_256(test_vector):
+    run_wycheproof_test("SHA3_256", test_vector)
+
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hmac_sha3_384_test.json")
+def test_hmac_wycheproof_sha3_384(test_vector):
+    run_wycheproof_test("SHA3_384", test_vector)
+
+@loaders.load_wycheproof_test_vectors(wp_test_vectors_dir / "hmac_sha3_512_test.json")
+def test_hmac_wycheproof_sha3_512(test_vector):
+    run_wycheproof_test("SHA3_512", test_vector)
