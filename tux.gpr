@@ -4,8 +4,6 @@ project Tux is
    for Library_Name use "tux";
    for Library_Version use Project'Library_Name & ".so." & Tux_Config.Crate_Version;
 
-   Keccak_Enabled := Tux_Config.Keccak_Enabled;
-
    --  Configure SHA-1 source directories based on the selected implementation
 
    SHA1_Dirs := ();
@@ -60,21 +58,20 @@ project Tux is
    SHA3_Self_Test_Dirs := ();
    case Tux_Config.SHA3_Enabled is
       when "True" =>
-         Keccak_Enabled      := "True";
          SHA3_Dirs           := ("src/spark/sha3/enabled");
          SHA3_Self_Test_Dirs := ("src/spark/sha3/self_test");
       when others =>
          SHA3_Dirs           := ("src/spark/sha3/disabled");
    end case;
 
-   --  Configure Keccak source directories based on the selected implementation
+   --  Configure SHAKE source directories based on the selected implementation
 
-   Keccak_Dirs := ();
-   case Keccak_Enabled is
+   SHAKE_Dirs := ();
+   case Tux_Config.SHAKE_Enabled is
       when "True" =>
-         Keccak_Dirs := ("src/spark/keccak");
+         SHAKE_Dirs := ("src/spark/shake/enabled");
       when others =>
-         Keccak_Dirs := (); --  No stubs needed for Keccak
+         SHAKE_Dirs := ("src/spark/shake/disabled");
    end case;
 
    --  Add self test directories when enabled
@@ -89,12 +86,14 @@ project Tux is
       when others => null;
    end case;
 
-   for Source_Dirs use ("src/spark/", "config/") &
+   for Source_Dirs use ("config/",
+                        "src/spark/",
+                        "src/spark/keccak/") &
                        SHA1_Dirs &
                        SHA256_Dirs &
                        SHA512_Dirs &
-                       Keccak_Dirs &
                        SHA3_Dirs &
+                       SHAKE_Dirs &
                        Self_Test_Dirs;
    for Object_Dir use "obj/" & Tux_Config.Build_Profile;
    for Create_Missing_Dirs use "True";

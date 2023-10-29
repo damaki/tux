@@ -22,13 +22,13 @@ tags = [
 gnat = ">=12.0.0"
 
 [configuration.variables]
-Keccak_Enabled     = { type = "Boolean", default = true }
 SHA1_Enabled       = { type = "Boolean", default = true }
 SHA256_Enabled     = { type = "Boolean", default = true }
 SHA256_Backend     = { type = "Enum", values = ["Speed", "Size"], default = "Speed" }
 SHA512_Enabled     = { type = "Boolean", default = true }
 SHA512_Backend     = { type = "Enum", values = ["Speed", "Size"], default = "Speed" }
 SHA3_Enabled       = { type = "Boolean", default = true }
+SHAKE_Enabled      = { type = "Boolean", default = true }
 Self_Tests_Enabled = { type = "Boolean", default = true }
 
 [build-switches]
