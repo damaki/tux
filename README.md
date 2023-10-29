@@ -20,6 +20,8 @@ Tux currently supports the following cryptographic primitives:
    * SHA-1
    * SHA-2 (SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256)
    * SHA-3 (SHA3-224, SHA3-256, SHA3-384, SHA3-512)
+ * eXtendable Output Functions (XOF):
+   * SHAKE128, SHAKE256
  * Keyed-Hash Message Authentication Code (HMAC)
  * HMAC-based Extract-and-Expand Key Derivation Function (HKDF)
 
@@ -177,6 +179,28 @@ variables supported by Tux are:
         <li><tt>"Speed"</tt> selects the implementation optimised for speed.</li>
         <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li></li>
       </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>SHA3_Enabled</tt></td>
+    <td>
+      <tt>true</tt><br/>
+      <tt>false</tt><br/>
+    </td>
+    <td><tt>true</tt></td>
+    <td>
+      Enables/disables support for SHA-3 hash functions (SHA3-224, SHA3-256, SHA3-384, and SHA3-512).
+    </td>
+  </tr>
+  <tr>
+    <td><tt>SHAKE_Enabled</tt></td>
+    <td>
+      <tt>true</tt><br/>
+      <tt>false</tt><br/>
+    </td>
+    <td><tt>true</tt></td>
+    <td>
+      Enables/disables support for the SHAKE128 and SHAKE256 eXtendable Output Functions (XOF).
     </td>
   </tr>
   <tr>
