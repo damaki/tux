@@ -8,6 +8,7 @@ project Unit_Tests is
       "src/sha256",
       "src/sha512",
       "src/sha3",
+      "src/shake",
       "src/" & Unit_Tests_Config.Report_Format,
       "config/");
    for Object_Dir use "obj/" & Unit_Tests_Config.Build_Profile;
@@ -28,6 +29,7 @@ project Unit_Tests is
    SHA256_Backend := "";
    SHA512_Backend := "";
    SHA3_Backend := "";
+   SHAKE_Backend := "";
 
    case Tux_Config.Self_Tests_Enabled is
       when "True" =>
@@ -94,6 +96,13 @@ project Unit_Tests is
          SHA3_Backend := "enabled";
    end case;
 
+   case Tux_Config.SHAKE_Enabled is
+      when "False" =>
+         SHAKE_Backend := "disabled";
+      when others =>
+         SHAKE_Backend := "enabled";
+   end case;
+
    package Naming is
       for Body ("SHA1_Self_Tests")     use "sha1_self_tests__" & SHA1_Self_Tests_Backend & ".adb";
       for Body ("SHA256_Self_Tests")   use "sha256_self_tests__" & SHA256_Self_Tests_Backend & ".adb";
@@ -108,6 +117,7 @@ project Unit_Tests is
       for Body ("SHA512_Tests")        use "sha512_tests__" & SHA512_Backend &".adb";
       for Body ("SHA3_Tests")          use "sha3_tests__" & SHA3_Backend &".adb";
       for Body ("SHA512_Length_Tests") use "sha512_length_tests__" & SHA512_Backend &".adb";
+      for Body ("SHAKE_Tests")         use "shake_tests__" & SHAKE_Backend &".adb";
    end Naming;
 
    package Compiler is

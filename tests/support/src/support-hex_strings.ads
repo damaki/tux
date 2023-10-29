@@ -8,6 +8,11 @@ with Tux.Types;
 
 package Support.Hex_Strings is
 
+   function Valid_Hex_String (Str : String) return Boolean is
+     (Str'Length mod 2 = 0
+      and (for all C of Str => C in '0' .. '9' | 'a' .. 'f' | 'A' .. 'F'));
+   --  Check if a string is a valid hexadecimal string
+
    procedure Print_Hex_String (Data : Tux.Types.Byte_Array);
    --  Print a byte array as a hexadecimal string to the standard output
 
