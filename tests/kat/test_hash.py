@@ -65,7 +65,6 @@ def run_msg_test_vector(hash_func, test_vector):
 def run_monte_test_vector(hash_func, monte_mode, seed, count, expected_md):
     """Run a test vector from a "Monte Carlo" response file"""
     seed = binascii.unhexlify(seed)
-    expected_md = expected_md
 
     md = run_hash_program(hash_func, seed, monte=monte_mode)
 
@@ -164,42 +163,42 @@ def test_sha3_512_long_msg(test_vector):
 
 # Monte RSP test vectors
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA224Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA224Monte.rsp")
 def test_sha224_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA224", "shavs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA256Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA256Monte.rsp")
 def test_sha256_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA256", "shavs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA384Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA384Monte.rsp")
 def test_sha384_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA384", "shavs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA512Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA512Monte.rsp")
 def test_sha512_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA512", "shavs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA512_224Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA512_224Monte.rsp")
 def test_sha512_224_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA512_224", "shavs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA512_256Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", shabytetestvectors / "SHA512_256Monte.rsp")
 def test_sha512_256_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA512_256", "shavs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_224Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_224Monte.rsp")
 def test_sha3_224_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA3_224", "sha3vs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_256Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_256Monte.rsp")
 def test_sha3_256_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA3_256", "sha3vs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_384Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_384Monte.rsp")
 def test_sha3_384_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA3_384", "sha3vs", Seed, COUNT, MD)
 
-@loaders.load_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_512Monte.rsp")
+@loaders.load_sha_monte_rsp_test_vectors("Seed,COUNT,MD", sha_3bytetestvectors / "SHA3_512Monte.rsp")
 def test_sha3_512_monte_rsp(Seed, COUNT, MD):
     run_monte_test_vector("SHA3_512", "sha3vs", Seed, COUNT, MD)

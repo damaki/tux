@@ -53,7 +53,7 @@ def load_msg_rsp_test_vectors(filename):
         return function
     return wrapper
 
-def load_monte_rsp_test_vectors(tc_params, filename):
+def load_sha_monte_rsp_test_vectors(tc_params, filename):
     """
     PyTest decorator to load test vectors from "Monte Carlo" response files
     (e.g. SHA224Monte.rsp) to parameterize the test.
@@ -101,6 +101,43 @@ def load_monte_rsp_test_vectors(tc_params, filename):
 
         return function
     return wrapper
+
+
+def load_shake_monte_rsp_test_vectors(filename):
+    """
+    Loads test vectors from "Monte Carlo" response files (e.g. SHA224Monte.rsp).
+    """
+
+    test_vectors = []
+    test_attributes = {}
+    test_vector = {
+        "file": Path(filename).name
+    }
+
+    with open(filename, 'r') as f:
+
+        line_num = 1
+
+        for line in f.readlines():
+            if m := re.match(r"^(\w+)\s*=\s*(\w+)", line):
+
+                if "line" not in test_vector:
+                    test_vector["line"] = line_num
+
+                key = m.group(1)
+
+                test_vector[key] = m.group(2)
+
+                if key == "Output":
+                    test_vectors.append(test_vector)
+
+                    test_vector = {
+                        "file": Path(filename).name
+                    }
+            elif m := re.match(r"\[(.+)\s+=\s+(.+)\]", line):
+                test_attributes[m.group(1)] = m.group(2)
+
+    return test_attributes, test_vectors
 
 def load_wycheproof_test_vectors(filename):
     """
