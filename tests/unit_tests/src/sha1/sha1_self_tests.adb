@@ -4,6 +4,8 @@
 --  SPDX-License-Identifier: Apache-2.0
 --
 with AUnit.Assertions; use AUnit.Assertions;
+
+with Tux_Config;
 with Tux.SHA1.Self_Test;
 
 package body SHA1_Self_Tests is
@@ -24,10 +26,13 @@ package body SHA1_Self_Tests is
    function Suite return Access_Test_Suite is
       S : constant Access_Test_Suite := new Test_Suite;
    begin
-      S.Add_Test
-        (Caller.Create
-           ("SHA-1 Self Test with correct implementation",
-            Test_SHA1_Self_Tests'Access));
+      if Tux_Config.SHA1_Enabled then
+         S.Add_Test
+           (Caller.Create
+              ("SHA-1 Self Test with correct implementation",
+               Test_SHA1_Self_Tests'Access));
+      end if;
+
       return S;
    end Suite;
 

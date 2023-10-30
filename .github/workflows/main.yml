@@ -55,7 +55,6 @@ jobs:
         sha512_backend: ["Speed"]
         sha3_enabled: ["True", "False"]
         shake_enabled: ["True", "False"]
-        self_tests_enabled: ["True"]
         include:
           # Test algorithms optimised for size
           - sha1_enabled: "True"
@@ -65,7 +64,6 @@ jobs:
             sha512_backend: "Size"
             sha3_enabled: "True"
             shake_enabled: "True"
-            self_tests_enabled: "True"
 
     runs-on: ubuntu-latest
 
@@ -97,8 +95,7 @@ jobs:
             --sha512-enabled=${{ matrix.sha512_enabled }} \
             --sha512-backend=${{ matrix.sha512_backend }} \
             --sha3-enabled=${{ matrix.sha3_enabled }} \
-            --shake-enabled=${{ matrix.shake_enabled }} \
-            --self-tests-enabled=${{ matrix.self_tests_enabled }}
+            --shake-enabled=${{ matrix.shake_enabled }}
           cd test_crate
           alr build
 
