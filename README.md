@@ -203,17 +203,6 @@ variables supported by Tux are:
       Enables/disables support for the SHAKE128 and SHAKE256 eXtendable Output Functions (XOF).
     </td>
   </tr>
-  <tr>
-    <td><tt>Self_Tests_Enabled</tt></td>
-    <td>
-      <tt>true</tt><br/>
-      <tt>false</tt><br/>
-    </td>
-    <td><tt>true</tt></td>
-    <td>
-      Enables/disables self-test subprograms.
-    </td>
-  </tr>
 </table>
 
 For example, to select the SHA-256 implementation that is optimised for code

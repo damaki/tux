@@ -6,24 +6,20 @@ project Tux is
 
    --  Configure SHA-1 source directories based on the selected implementation
 
-   SHA1_Dirs := ();
-   SHA1_Self_Test_Dirs := ();
+   SHA1_Dirs := ("src/spark/sha1/");
    case Tux_Config.SHA1_Enabled is
       when "True" =>
-         SHA1_Dirs           := ("src/spark/sha1/enabled");
-         SHA1_Self_Test_Dirs := ("src/spark/sha1/self_test/");
+         SHA1_Dirs := SHA1_Dirs & ("src/spark/sha1/enabled");
       when others =>
-         SHA1_Dirs           := ("src/spark/sha1/disabled");
+         SHA1_Dirs := SHA1_Dirs & ("src/spark/sha1/disabled");
    end case;
 
    --  Configure SHA-256 source directories based on the selected implementation
 
-   SHA256_Dirs := ();
-   SHA256_Self_Test_Dirs := ();
+   SHA256_Dirs := ("src/spark/sha256");
    case Tux_Config.SHA256_Enabled is
       when "True" =>
-         SHA256_Dirs           := ("src/spark/sha256/enabled");
-         SHA256_Self_Test_Dirs := ("src/spark/sha256/self_test/");
+         SHA256_Dirs := SHA256_Dirs & ("src/spark/sha256/enabled");
          case Tux_Config.SHA256_Backend is
             when "Speed" =>
                SHA256_Dirs := SHA256_Dirs & ("src/spark/sha256/enabled/speed/");
@@ -31,17 +27,15 @@ project Tux is
                SHA256_Dirs := SHA256_Dirs & ("src/spark/sha256/enabled/size/");
          end case;
       when others =>
-         SHA256_Dirs           := ("src/spark/sha256/disabled");
+         SHA256_Dirs := SHA256_Dirs & ("src/spark/sha256/disabled");
    end case;
 
    --  Configure SHA-512 source directories based on the selected implementation
 
-   SHA512_Dirs := ();
-   SHA512_Self_Test_Dirs := ();
+   SHA512_Dirs := ("src/spark/sha512/");
    case Tux_Config.SHA512_Enabled is
       when "True" =>
-         SHA512_Dirs           := ("src/spark/sha512/enabled");
-         SHA512_Self_Test_Dirs := ("src/spark/sha512/self_test/");
+         SHA512_Dirs := SHA512_Dirs & ("src/spark/sha512/enabled");
          case Tux_Config.SHA512_Backend is
             when "Speed" =>
                SHA512_Dirs := SHA512_Dirs & ("src/spark/sha512/enabled/speed/");
@@ -49,19 +43,17 @@ project Tux is
                SHA512_Dirs := SHA512_Dirs & ("src/spark/sha512/enabled/size/");
          end case;
       when others =>
-         SHA512_Dirs           := ("src/spark/sha512/disabled");
+         SHA512_Dirs := SHA512_Dirs & ("src/spark/sha512/disabled");
    end case;
 
    --  Configure SHA-3 source directories based on the selected implementation
 
-   SHA3_Dirs := ();
-   SHA3_Self_Test_Dirs := ();
+   SHA3_Dirs := ("src/spark/sha3/");
    case Tux_Config.SHA3_Enabled is
       when "True" =>
-         SHA3_Dirs           := ("src/spark/sha3/enabled");
-         SHA3_Self_Test_Dirs := ("src/spark/sha3/self_test");
+         SHA3_Dirs := SHA3_Dirs & ("src/spark/sha3/enabled");
       when others =>
-         SHA3_Dirs           := ("src/spark/sha3/disabled");
+         SHA3_Dirs := SHA3_Dirs & ("src/spark/sha3/disabled");
    end case;
 
    --  Configure SHAKE source directories based on the selected implementation
@@ -74,18 +66,6 @@ project Tux is
          SHAKE_Dirs := ("src/spark/shake/disabled");
    end case;
 
-   --  Add self test directories when enabled
-
-   Self_Test_Dirs := ();
-   case Tux_Config.Self_Tests_Enabled is
-      when "True" =>
-         Self_Test_Dirs := SHA1_Self_Test_Dirs &
-                           SHA256_Self_Test_Dirs &
-                           SHA512_Self_Test_Dirs &
-                           SHA3_Self_Test_Dirs;
-      when others => null;
-   end case;
-
    for Source_Dirs use ("config/",
                         "src/spark/",
                         "src/spark/keccak/") &
@@ -93,8 +73,7 @@ project Tux is
                        SHA256_Dirs &
                        SHA512_Dirs &
                        SHA3_Dirs &
-                       SHAKE_Dirs &
-                       Self_Test_Dirs;
+                       SHAKE_Dirs;
    for Object_Dir use "obj/" & Tux_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
    for Library_Dir use "lib";

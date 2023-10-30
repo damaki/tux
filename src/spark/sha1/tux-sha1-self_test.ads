@@ -3,10 +3,9 @@
 --
 --  SPDX-License-Identifier: Apache-2.0
 --
-pragma SPARK_Mode;
-
 function Tux.SHA1.Self_Test return Boolean with
   Preelaborate,
+  SPARK_Mode,
   Annotate => (GNATprove, Terminating);
 --  Perform a SHA-1 self test.
 --
