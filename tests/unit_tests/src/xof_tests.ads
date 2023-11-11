@@ -25,37 +25,12 @@ package XOF_Tests is
       overriding
       procedure Set_Up (T : in out Test);
 
-      ------------------------------
-      -- Multi-Part Message Tests --
-      ------------------------------
-
-      --  These tests verify that a multi-part hashing operation with varying
-      --  part sizes produces the same result as the equivalent single-part
-      --  operation.
-
-      procedure Test_Multi_Part_1 (T : in out Test);
-      procedure Test_Multi_Part_2 (T : in out Test);
-      procedure Test_Multi_Part_31 (T : in out Test);
-      procedure Test_Multi_Part_32 (T : in out Test);
-      procedure Test_Multi_Part_33 (T : in out Test);
-      procedure Test_Multi_Part_63 (T : in out Test);
-      procedure Test_Multi_Part_64 (T : in out Test);
-      procedure Test_Multi_Part_65 (T : in out Test);
-      procedure Test_Multi_Part_127 (T : in out Test);
-      procedure Test_Multi_Part_128 (T : in out Test);
-      procedure Test_Multi_Part_129 (T : in out Test);
-
-      ----------------------
-      -- XOF Verify Tests --
-      ----------------------
-
+      procedure Test_Multi_Part_Input (T : in out Test);
+      procedure Test_Multi_Part_Output (T : in out Test);
       procedure Test_Verify_Valid_Hash (T : in out Test);
-      procedure Test_Verify_Invalid_First_Byte (T : in out Test);
-      procedure Test_Verify_Invalid_Last_Byte (T : in out Test);
-
+      procedure Test_Verify_Invalid_Hash (T : in out Test);
       procedure Test_Finish_Verify_Valid_Hash (T : in out Test);
-      procedure Test_Finish_Verify_Invalid_First_Byte (T : in out Test);
-      procedure Test_Finish_Verify_Invalid_Last_Byte (T : in out Test);
+      procedure Test_Finish_Verify_Invalid_Hash (T : in out Test);
 
       procedure Add_To_Suite (S : in out Test_Suite'Class);
 
@@ -67,7 +42,7 @@ package XOF_Tests is
 
 private
 
-   procedure Multi_Part_Test
+   procedure Multi_Part_Input_Test
      (Buffer      : Tux.Types.Byte_Array;
       Algorithm   : Tux.XOF.Algorithm_Kind;
       Part_Length : Positive)
@@ -75,5 +50,17 @@ private
      Pre => Part_Length <= Buffer'Length;
    --  Test that a multi-part hashing operation with blocks of size Part_Length
    --  produces the same result as the equivalent single-part operation.
+
+   procedure Multi_Part_Output_Test
+     (Hash           : in out Tux.Types.Byte_Array;
+      Reference_Hash : in out Tux.Types.Byte_Array;
+      Algorithm      :        Tux.XOF.Algorithm_Kind;
+      Part_Length    :        Positive)
+   with
+     Pre => (Part_Length <= Hash'Length
+             and then Hash'Length = Reference_Hash'Length);
+   --  Test that extracting the output in multiple parts with blocks of size
+   --  Part_Length produces the same result as the equivalent single-part
+   --  operation.
 
 end XOF_Tests;

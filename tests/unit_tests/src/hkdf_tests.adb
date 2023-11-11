@@ -9,9 +9,12 @@ with Tux.Types;
 
 package body HKDF_Tests is
 
-   ----------------------------
+   --------------------
    -- Test_Empty_OKM --
-   ----------------------------
+   --------------------
+
+   --  This test verifies that HKDF executes without errors in the case where
+   --  the output OKM buffer is an empty array (OKM'Length = 0).
 
    procedure Test_Empty_OKM (T : in out Test) is
       OKM : Tux.Types.Byte_Array (1 .. 0);
