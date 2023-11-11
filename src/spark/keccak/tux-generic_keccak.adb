@@ -127,14 +127,11 @@ package body Tux.Generic_Keccak is
       end loop Outer_Loop;
    end Extract_Bytes;
 
-   -------------
-   -- Permute --
-   -------------
+   ---------------------
+   -- Generic_Permute --
+   ---------------------
 
-   procedure Permute
-     (Ctx        : in out Context;
-      Num_Rounds :        Round_Count)
-   is
+   procedure Generic_Permute (Ctx : in out Context) is
       type Round_Index is new Natural range 0 .. 23;
 
       Max_Rounds : constant Positive := 12 + (Lane_Size_Log * 2);
@@ -524,7 +521,7 @@ package body Tux.Generic_Keccak is
 
       Copy_To_State_From_A;
 
-   end Permute;
+   end Generic_Permute;
 
    --------------
    -- Sanitize --

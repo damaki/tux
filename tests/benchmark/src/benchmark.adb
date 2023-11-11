@@ -39,14 +39,11 @@ procedure Benchmark is
       Name : String;
 
       type Permutation_State is private;
-      type Round_Count is range <>;
-      Num_Rounds : Round_Count;
 
       with procedure Initialize (State : out Permutation_State);
 
       with procedure Permute
-        (State      : in out Permutation_State;
-         Num_Rounds :        Round_Count);
+        (State : in out Permutation_State);
    procedure Benchmark_Permutation;
 
    ---------------------------
@@ -248,9 +245,9 @@ procedure Benchmark is
 
       Support.Timing.Calibrate;
 
-      for I in Integer range 1 .. Num_Repetitions loop
+      for I in Integer range 1 .. Num_Repetitions * 100 loop
          Support.Timing.Start_Measurement (T);
-         Permute (State, Num_Rounds);
+         Permute (State);
          Elapsed := Support.Timing.End_Measurement (T);
 
          if Elapsed < Min_Elapsed then
@@ -270,19 +267,15 @@ procedure Benchmark is
 
    procedure Benchmark_Keccak_1600_24 is new Benchmark_Permutation
      (Name              => "Keccak-p[1600, 24]",
-      Permutation_State => Tux.Keccak_1600.Context,
-      Round_Count       => Tux.Keccak_1600.Round_Count,
-      Num_Rounds        => 24,
-      Initialize        => Tux.Keccak_1600.Initialize,
-      Permute           => Tux.Keccak_1600.Permute);
+      Permutation_State => Tux.Keccak_1600.Keccak.Context,
+      Initialize        => Tux.Keccak_1600.Keccak.Initialize,
+      Permute           => Tux.Keccak_1600.Permute_24);
 
    procedure Benchmark_Keccak_1600_12 is new Benchmark_Permutation
      (Name              => "Keccak-p[1600, 12]",
-      Permutation_State => Tux.Keccak_1600.Context,
-      Round_Count       => Tux.Keccak_1600.Round_Count,
-      Num_Rounds        => 12,
-      Initialize        => Tux.Keccak_1600.Initialize,
-      Permute           => Tux.Keccak_1600.Permute);
+      Permutation_State => Tux.Keccak_1600.Keccak.Context,
+      Initialize        => Tux.Keccak_1600.Keccak.Initialize,
+      Permute           => Tux.Keccak_1600.Permute_12);
 
    type Byte_Array_Access is access Tux.Types.Byte_Array;
 

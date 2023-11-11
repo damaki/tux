@@ -29,6 +29,7 @@ SHA512_Enabled     = { type = "Boolean", default = true }
 SHA512_Backend     = { type = "Enum", values = ["Speed", "Size"], default = "Speed" }
 SHA3_Enabled       = { type = "Boolean", default = true }
 SHAKE_Enabled      = { type = "Boolean", default = true }
+Keccak_Backend     = { type = "Enum", values = ["Speed", "Size"], default = "Speed" }
 Self_Tests_Enabled = { type = "Boolean", default = true }
 
 [build-switches]

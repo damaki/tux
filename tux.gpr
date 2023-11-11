@@ -66,14 +66,24 @@ project Tux is
          SHAKE_Dirs := ("src/spark/shake/disabled");
    end case;
 
+   --  Configure Keccak source directories based on the selected implementation
+
+   Keccak_Dirs := ("src/spark/keccak/");
+   case Tux_Config.Keccak_Backend is
+      when "Size" =>
+         Keccak_Dirs := Keccak_Dirs & ("src/spark/keccak/size");
+      when "Speed" =>
+         Keccak_Dirs := Keccak_Dirs & ("src/spark/keccak/speed");
+   end case;
+
    for Source_Dirs use ("config/",
-                        "src/spark/",
-                        "src/spark/keccak/") &
+                        "src/spark/") &
                        SHA1_Dirs &
                        SHA256_Dirs &
                        SHA512_Dirs &
                        SHA3_Dirs &
-                       SHAKE_Dirs;
+                       SHAKE_Dirs &
+                       Keccak_Dirs;
    for Object_Dir use "obj/" & Tux_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
    for Library_Dir use "lib";
