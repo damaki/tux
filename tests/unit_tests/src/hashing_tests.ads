@@ -25,37 +25,11 @@ package Hashing_Tests is
       overriding
       procedure Set_Up (T : in out Test);
 
-      ------------------------------
-      -- Multi-Part Message Tests --
-      ------------------------------
-
-      --  These tests verify that a multi-part hashing operation with varying
-      --  part sizes produces the same result as the equivalent single-part
-      --  operation.
-
-      procedure Test_Multi_Part_1 (T : in out Test);
-      procedure Test_Multi_Part_2 (T : in out Test);
-      procedure Test_Multi_Part_31 (T : in out Test);
-      procedure Test_Multi_Part_32 (T : in out Test);
-      procedure Test_Multi_Part_33 (T : in out Test);
-      procedure Test_Multi_Part_63 (T : in out Test);
-      procedure Test_Multi_Part_64 (T : in out Test);
-      procedure Test_Multi_Part_65 (T : in out Test);
-      procedure Test_Multi_Part_127 (T : in out Test);
-      procedure Test_Multi_Part_128 (T : in out Test);
-      procedure Test_Multi_Part_129 (T : in out Test);
-
-      -----------------------
-      -- Hash Verify Tests --
-      -----------------------
-
+      procedure Test_Multi_Part (T : in out Test);
       procedure Test_Verify_Valid_Hash (T : in out Test);
-      procedure Test_Verify_Invalid_First_Byte (T : in out Test);
-      procedure Test_Verify_Invalid_Last_Byte (T : in out Test);
-
+      procedure Test_Verify_Invalid_Hash (T : in out Test);
       procedure Test_Finish_Verify_Valid_Hash (T : in out Test);
-      procedure Test_Finish_Verify_Invalid_First_Byte (T : in out Test);
-      procedure Test_Finish_Verify_Invalid_Last_Byte (T : in out Test);
+      procedure Test_Finish_Verify_Invalid_Hash (T : in out Test);
 
       procedure Add_To_Suite (S : in out Test_Suite'Class);
 
