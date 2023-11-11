@@ -13,8 +13,15 @@ package body Tux.Generic_Keccak is
 
    procedure Sanitize_Context is new Tux.Sanitization.Generic_Sanitize
      (Element_Type   => Context,
-      Sanitize_Value => (4 | 5 | 10 | 12 | 13 | 16 => Lane_Type'Last,
-                         others                    => 0));
+      Sanitize_Value => (0 => (4         => Lane_Type'Last,
+                               others    => 0),
+                         1 => (0         => Lane_Type'Last,
+                               others    => 0),
+                         2 => (0 | 2 | 3 => Lane_Type'Last,
+                               others    => 0),
+                         3 => (1         => Lane_Type'Last,
+                               others    => 0),
+                         4 => (others    => 0)));
    --  Resets the context to its initial state.
    --
    --  Note that this lane-complementing implementation requires some rounds
@@ -39,18 +46,23 @@ package body Tux.Generic_Keccak is
       Lane   : Lane_Type;
 
    begin
-      for I in Ctx'Range loop
-         pragma Loop_Optimize (Ivdep, Vector);
+      --  Process full lanes
 
-         Offset := I * Lane_Size_Bytes;
+      Outer_Loop :
+      for Y in Y_Coord loop
+         for X in X_Coord loop
+            pragma Loop_Optimize (Ivdep, Vector);
 
-         exit when Offset >= Data'Length;
+            Offset := (Byte_Count (Y) * 5 + Byte_Count (X)) * Lane_Size_Bytes;
 
-         Pos  := Data'First + Offset;
-         Lane := To_Lane (Data (Pos .. Pos + Lane_Size_Bytes - 1));
+            exit Outer_Loop when Offset >= Data'Length;
 
-         Ctx (I) := Ctx (I) xor Lane;
-      end loop;
+            Pos  := Data'First + Offset;
+            Lane := To_Lane (Data (Pos .. Pos + Lane_Size_Bytes - 1));
+
+            Ctx (X, Y) := Ctx (X, Y) xor Lane;
+         end loop;
+      end loop Outer_Loop;
    end XOR_Bytes_Into_Context;
 
    -------------------
@@ -67,35 +79,56 @@ package body Tux.Generic_Keccak is
       pragma Assertion_Policy (Ghost => Ignore);
 
       Complement_Mask : constant Context :=
-        (4 | 5 | 10 | 12 | 13 | 16 => Lane_Type'Last,
-         others                    => 0);
+        (0 => (4         => Lane_Type'Last,
+               others    => 0),
+         1 => (0         => Lane_Type'Last,
+               others    => 0),
+         2 => (0 | 2 | 3 => Lane_Type'Last,
+               others    => 0),
+         3 => (1         => Lane_Type'Last,
+               others    => 0),
+         4 => (others    => 0));
 
-      Ghost_Offset : Byte_Count := 0 with Ghost;
+      Offset_G : Byte_Count := 0 with Ghost;
 
       Offset : Byte_Count;
       Pos    : Index_Number;
 
    begin
-      for I in Ctx'Range loop
-         pragma Loop_Optimize (Ivdep, Vector);
+      --  Process full lanes
 
-         pragma Loop_Invariant (Ghost_Offset mod Lane_Size_Bytes = 0);
-         pragma Loop_Invariant (Ghost_Offset <= Data'Length);
-         pragma Loop_Invariant (Ghost_Offset = (I * Lane_Size_Bytes));
+      Outer_Loop :
+      for Y in Y_Coord loop
+         pragma Loop_Invariant (Offset_G mod Lane_Size_Bytes = 0);
+         pragma Loop_Invariant (Offset_G <= Data'Length);
          pragma Loop_Invariant
-           (Data (Data'First .. Data'First + Ghost_Offset - 1)'Initialized);
+           (Offset_G = Byte_Count (Y) * Lane_Size_Bytes * 5);
+         pragma Loop_Invariant
+           (Data (Data'First .. Data'First + Offset_G - 1)'Initialized);
 
-         Offset := I * Lane_Size_Bytes;
+         for X in X_Coord loop
+            pragma Loop_Optimize (Ivdep, Vector);
 
-         exit when Offset >= Data'Length;
+            pragma Loop_Invariant (Offset_G mod Lane_Size_Bytes = 0);
+            pragma Loop_Invariant
+              (Offset_G = (Byte_Count (Y) * Lane_Size_Bytes * 5) +
+                          (Byte_Count (X) * Lane_Size_Bytes));
+            pragma Loop_Invariant (Offset_G <= Data'Length);
+            pragma Loop_Invariant
+              (Data (Data'First .. Data'First + Offset_G - 1)'Initialized);
 
-         Pos  := Data'First + Offset;
+            Offset := (Byte_Count (Y) * 5 + Byte_Count (X)) * Lane_Size_Bytes;
 
-         To_Bytes (Ctx (I) xor Complement_Mask (I),
-                   Data (Pos .. Pos + Lane_Size_Bytes - 1));
+            exit Outer_Loop when Offset >= Data'Length;
 
-         Ghost_Offset := Ghost_Offset + Lane_Size_Bytes;
-      end loop;
+            Pos  := Data'First + Offset;
+
+            To_Bytes (Ctx (X, Y) xor Complement_Mask (X, Y),
+                      Data (Pos .. Pos + Lane_Size_Bytes - 1));
+
+            Offset_G := Offset_G + Lane_Size_Bytes;
+         end loop;
+      end loop Outer_Loop;
    end Extract_Bytes;
 
    ---------------------
@@ -210,61 +243,61 @@ package body Tux.Generic_Keccak is
       procedure Copy_From_State
       is
       begin
-         Aba := Ctx (0);
-         Abe := Ctx (1);
-         Abi := Ctx (2);
-         Abo := Ctx (3);
-         Abu := Ctx (4);
-         Aga := Ctx (5);
-         Age := Ctx (6);
-         Agi := Ctx (7);
-         Ago := Ctx (8);
-         Agu := Ctx (9);
-         Aka := Ctx (10);
-         Ake := Ctx (11);
-         Aki := Ctx (12);
-         Ako := Ctx (13);
-         Aku := Ctx (14);
-         Ama := Ctx (15);
-         Ame := Ctx (16);
-         Ami := Ctx (17);
-         Amo := Ctx (18);
-         Amu := Ctx (19);
-         Asa := Ctx (20);
-         Ase := Ctx (21);
-         Asi := Ctx (22);
-         Aso := Ctx (23);
-         Asu := Ctx (24);
+         Aba := Ctx (0, 0);
+         Abe := Ctx (1, 0);
+         Abi := Ctx (2, 0);
+         Abo := Ctx (3, 0);
+         Abu := Ctx (4, 0);
+         Aga := Ctx (0, 1);
+         Age := Ctx (1, 1);
+         Agi := Ctx (2, 1);
+         Ago := Ctx (3, 1);
+         Agu := Ctx (4, 1);
+         Aka := Ctx (0, 2);
+         Ake := Ctx (1, 2);
+         Aki := Ctx (2, 2);
+         Ako := Ctx (3, 2);
+         Aku := Ctx (4, 2);
+         Ama := Ctx (0, 3);
+         Ame := Ctx (1, 3);
+         Ami := Ctx (2, 3);
+         Amo := Ctx (3, 3);
+         Amu := Ctx (4, 3);
+         Asa := Ctx (0, 4);
+         Ase := Ctx (1, 4);
+         Asi := Ctx (2, 4);
+         Aso := Ctx (3, 4);
+         Asu := Ctx (4, 4);
       end Copy_From_State;
 
       procedure Copy_To_State_From_A
       is
       begin
-         Ctx := (0 => Aba,
-                 1 => Abe,
-                 2 => Abi,
-                 3 => Abo,
-                 4 => Abu,
-                 5 => Aga,
-                 6 => Age,
-                 7 => Agi,
-                 8 => Ago,
-                 9 => Agu,
-                 10 => Aka,
-                 11 => Ake,
-                 12 => Aki,
-                 13 => Ako,
-                 14 => Aku,
-                 15 => Ama,
-                 16 => Ame,
-                 17 => Ami,
-                 18 => Amo,
-                 19 => Amu,
-                 20 => Asa,
-                 21 => Ase,
-                 22 => Asi,
-                 23 => Aso,
-                 24 => Asu);
+         Ctx := (0 => (0 => Aba,
+                       1 => Aga,
+                       2 => Aka,
+                       3 => Ama,
+                       4 => Asa),
+                 1 => (0 => Abe,
+                       1 => Age,
+                       2 => Ake,
+                       3 => Ame,
+                       4 => Ase),
+                 2 => (0 => Abi,
+                       1 => Agi,
+                       2 => Aki,
+                       3 => Ami,
+                       4 => Asi),
+                 3 => (0 => Abo,
+                       1 => Ago,
+                       2 => Ako,
+                       3 => Amo,
+                       4 => Aso),
+                 4 => (0 => Abu,
+                       1 => Agu,
+                       2 => Aku,
+                       3 => Amu,
+                       4 => Asu));
       end Copy_To_State_From_A;
 
       procedure Prepare_Theta

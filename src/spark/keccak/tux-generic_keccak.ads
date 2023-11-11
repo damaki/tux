@@ -120,6 +120,6 @@ private
    type X_Coord is mod 5;
    type Y_Coord is mod 5;
 
-   type Context is array (Natural range 0 .. 24) of Lane_Type;
+   type Context is array (X_Coord, Y_Coord) of Lane_Type;
 
 end Tux.Generic_Keccak;
