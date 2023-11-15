@@ -106,8 +106,11 @@ tux = { path = "path/to/tux" }
 
 ## Configuration
 
-Tux is configured through Alire's crate configuration. The configuration
-variables supported by Tux are:
+Tux is configured through Alire crate configuration variables.
+These configuration variables allow for tuning the performance and code size
+of the library.
+
+The following configuration variables are supported:
 
 <table>
   <thead>
@@ -117,6 +120,41 @@ variables supported by Tux are:
     <th>Description</th>
   </thead>
   <tr>
+    <td><tt>Keccak_Optimize</tt></td>
+    <td>
+      <tt>"Speed"</tt><br/>
+      <tt>"Size"</tt><br/>
+    </td>
+    <td><tt>"Speed"</tt></td>
+    <td>
+      Configures Keccak to be optimized for speed or code size. This affects
+      the performance of algorithms based on Keccak such as SHA-3 and SHAKE.
+      <ul>
+        <li><tt>"Speed"</tt> selects the Keccak implementation that is optimised for speed.</li>
+        <li><tt>"Size"</tt> selects the Keccak implementation that is optimised for small code size.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><tt>Keccak_Backend</tt></td>
+    <td>
+      <tt>"Generic_Optimized"</tt><br/>
+      <tt>"Lane_Complemented"</tt><br/>
+    </td>
+    <td><tt>"Lane_Complemented"</tt></td>
+    <td>
+      Configures the Keccak implementation to use. This affects the performance of
+      algorithms based on Keccak such as SHA-3 and SHAKE.
+      <ul>
+        <li><tt>"Generic_Optimized"</tt> selects the generically optimized
+        implementation of Keccak that works well on all platforms.</li>
+        <li><tt>"Lane_Complemented"</tt> selects the Keccak implementation that
+        uses the lane complementing technique for better performance on platforms
+        without an "and not" instruction.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
     <td><tt>SHA1_Enabled</tt></td>
     <td>
       <tt>true</tt><br/>
@@ -125,17 +163,6 @@ variables supported by Tux are:
     <td><tt>true</tt></td>
     <td>
       Enables/disables support for SHA-1.
-    </td>
-  </tr>
-  <tr>
-    <td><tt>SHA256_Enabled</tt></td>
-    <td>
-      <tt>true</tt><br/>
-      <tt>false</tt><br/>
-    </td>
-    <td><tt>true</tt></td>
-    <td>
-      Enables/disables support for SHA-256 and SHA-224.
     </td>
   </tr>
   <tr>
@@ -155,14 +182,25 @@ variables supported by Tux are:
     </td>
   </tr>
   <tr>
-    <td><tt>SHA512_Enabled</tt></td>
+    <td><tt>SHA256_Enabled</tt></td>
     <td>
       <tt>true</tt><br/>
       <tt>false</tt><br/>
     </td>
     <td><tt>true</tt></td>
     <td>
-      Enables/disables support for SHA-512, SHA-384, SHA-512/224, and SHA-512/256.
+      Enables/disables support for SHA-256 and SHA-224.
+    </td>
+  </tr>
+  <tr>
+    <td><tt>SHA3_Enabled</tt></td>
+    <td>
+      <tt>true</tt><br/>
+      <tt>false</tt><br/>
+    </td>
+    <td><tt>true</tt></td>
+    <td>
+      Enables/disables support for SHA-3 hash functions (SHA3-224, SHA3-256, SHA3-384, and SHA3-512).
     </td>
   </tr>
   <tr>
@@ -177,19 +215,19 @@ variables supported by Tux are:
       This variable has no effect when <tt>SHA512_Enabled</tt> is <tt>false</tt>.
       <ul>
         <li><tt>"Speed"</tt> selects the implementation optimised for speed.</li>
-        <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li></li>
+        <li><tt>"Size"</tt> selects the implementation optimised for small code size.</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <td><tt>SHA3_Enabled</tt></td>
+    <td><tt>SHA512_Enabled</tt></td>
     <td>
       <tt>true</tt><br/>
       <tt>false</tt><br/>
     </td>
     <td><tt>true</tt></td>
     <td>
-      Enables/disables support for SHA-3 hash functions (SHA3-224, SHA3-256, SHA3-384, and SHA3-512).
+      Enables/disables support for SHA-512, SHA-384, SHA-512/224, and SHA-512/256.
     </td>
   </tr>
   <tr>
