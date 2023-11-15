@@ -69,11 +69,18 @@ project Tux is
    --  Configure Keccak source directories based on the selected implementation
 
    Keccak_Dirs := ("src/spark/keccak/");
-   case Tux_Config.Keccak_Backend is
+   case Tux_Config.Keccak_Optimize is
       when "Size" =>
          Keccak_Dirs := Keccak_Dirs & ("src/spark/keccak/size");
       when "Speed" =>
          Keccak_Dirs := Keccak_Dirs & ("src/spark/keccak/speed");
+   end case;
+
+   case Tux_Config.Keccak_Backend is
+      when "Lane_Complemented" =>
+         Keccak_Dirs := Keccak_Dirs & ("src/spark/keccak/lane_complemented");
+      when others =>
+         Keccak_Dirs := Keccak_Dirs & ("src/spark/keccak/generic_optimized");
    end case;
 
    for Source_Dirs use ("config/",
@@ -97,7 +104,7 @@ project Tux is
       for Default_Switches ("Ada") use Tux_Config.Ada_Compiler_Switches &
                                        ("-fcallgraph-info=su",
                                         "-fstack-usage",
-                                        "-funroll-loops");
+                                        "-funroll-loops", "-march=native", "-mtune=native");
 
       case Tux_Config.Build_Profile is
 
