@@ -76,7 +76,8 @@ package body Tux.Generic_Keccak is
       --  Ignore ghost code in this procedure to preserve the Ivdep property
       --  for Loop_Optimize (i.e. there are no loop-carried dependencies).
 
-      pragma Assertion_Policy (Ghost => Ignore);
+      pragma Assertion_Policy (Ghost          => Ignore,
+                               Loop_Invariant => Ignore);
 
       Complement_Mask : constant Context :=
         (0 => (4         => Lane_Type'Last,
