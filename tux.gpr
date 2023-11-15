@@ -104,7 +104,7 @@ project Tux is
       for Default_Switches ("Ada") use Tux_Config.Ada_Compiler_Switches &
                                        ("-fcallgraph-info=su",
                                         "-fstack-usage",
-                                        "-funroll-loops", "-march=native", "-mtune=native");
+                                        "-funroll-loops");
 
       case Tux_Config.Build_Profile is
 
