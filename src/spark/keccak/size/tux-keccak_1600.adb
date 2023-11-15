@@ -3,19 +3,14 @@
 --
 --  SPDX-License-Identifier: Apache-2.0
 --
-pragma SPARK_Mode (On);
-
-with Interfaces;
-
-with Tux.Generic_Keccak;
-with Tux.Types;
-with Tux.Types.Conversions;
 
 --  This is the implementation optimized for code size. The Num_Rounds
 --  parameter for Generic_Permute is known only at run-time so that the
 --  generic is instantiated only once.
 
-package body Tux.Keccak_1600 is
+package body Tux.Keccak_1600 with
+  SPARK_Mode
+is
 
    procedure Permute
      (Ctx        : in out Keccak.Context;

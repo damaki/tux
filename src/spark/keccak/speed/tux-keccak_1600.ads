@@ -3,8 +3,6 @@
 --
 --  SPDX-License-Identifier: Apache-2.0
 --
-pragma SPARK_Mode (On);
-
 with Interfaces;
 
 with Tux.Generic_Keccak;
