@@ -21,52 +21,11 @@ project Unit_Tests is
    --  Algorithms that are disabled in the test configuration are replaced
    --  with stub implementations to exclude those tests.
 
-   SHA1_Self_Tests_Backend := "";
-   SHA256_Self_Tests_Backend := "";
-   SHA512_Self_Tests_Backend := "";
-   SHA3_Self_Tests_Backend := "";
    SHA1_Backend := "";
    SHA256_Backend := "";
    SHA512_Backend := "";
    SHA3_Backend := "";
    SHAKE_Backend := "";
-
-   case Tux_Config.Self_Tests_Enabled is
-      when "True" =>
-         case Tux_Config.SHA1_Enabled is
-            when "False" =>
-               SHA1_Self_Tests_Backend := "disabled";
-            when others =>
-               SHA1_Self_Tests_Backend := "enabled";
-         end case;
-
-         case Tux_Config.SHA256_Enabled is
-            when "False" =>
-               SHA256_Self_Tests_Backend := "disabled";
-            when others =>
-               SHA256_Self_Tests_Backend := "enabled";
-         end case;
-
-         case Tux_Config.SHA512_Enabled is
-            when "False" =>
-               SHA512_Self_Tests_Backend := "disabled";
-            when others =>
-               SHA512_Self_Tests_Backend := "enabled";
-         end case;
-
-         case Tux_Config.SHA3_Enabled is
-            when "False" =>
-               SHA3_Self_Tests_Backend := "disabled";
-            when others =>
-               SHA3_Self_Tests_Backend := "enabled";
-         end case;
-
-      when others =>
-         SHA1_Self_Tests_Backend   := "disabled";
-         SHA256_Self_Tests_Backend := "disabled";
-         SHA512_Self_Tests_Backend := "disabled";
-         SHA3_Self_Tests_Backend   := "disabled";
-   end case;
 
    case Tux_Config.SHA1_Enabled is
       when "False" =>
