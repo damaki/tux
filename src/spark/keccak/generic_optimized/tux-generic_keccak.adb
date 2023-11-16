@@ -309,7 +309,7 @@ package body Tux.Generic_Keccak is
          Bbi := Rotate_Left (Aki xor Di, 171 mod Lane_Type'Size);
          Bbo := Rotate_Left (Amo xor D0, 21 mod Lane_Type'Size);
          Bbu := Rotate_Left (Asu xor Du, 78 mod Lane_Type'Size);
-         Eba := Bba xor (Bbe or Bbi);
+         Eba := Bba xor ((not Bbe) and Bbi);
          Eba := Eba xor Lane_Type (RC (RI) and (2**Lane_Type'Size - 1));
          Ca  := Eba;
          Ebe := Bbe xor ((not Bbi) and Bbo);
@@ -409,7 +409,7 @@ package body Tux.Generic_Keccak is
          Bbi := Rotate_Left (Eki xor Di, 171 mod Lane_Type'Size);
          Bbo := Rotate_Left (Emo xor D0, 21 mod Lane_Type'Size);
          Bbu := Rotate_Left (Esu xor Du, 78 mod Lane_Type'Size);
-         Aba := Bba xor (Bbe or Bbi);
+         Aba := Bba xor ((not Bbe) and Bbi);
          Aba := Aba xor Lane_Type (RC (RI) and (2**Lane_Type'Size - 1));
          Ca  := Aba;
          Abe := Bbe xor ((not Bbi) and Bbo);
