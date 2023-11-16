@@ -16,8 +16,8 @@ with Support.Timing;
 
 procedure Benchmark is
 
-   Num_Repetitions : constant Positive := 200;
-   Data_Size       : constant Positive := 1 * 1024 * 1024;
+   Num_Repetitions : constant Positive := 500;
+   Data_Size       : constant Positive := 256 * 1024;
 
    procedure Print_Cycles_Per_Byte
      (Data_Size : Natural;
@@ -25,15 +25,15 @@ procedure Benchmark is
 
    procedure Benchmark_Hash
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_Kind);
+      Algorithm : Tux.Hashing.Enabled_Algorithm_Kind);
 
    procedure Benchmark_HMAC
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_Kind);
+      Algorithm : Tux.Hashing.Enabled_Algorithm_Kind);
 
    procedure Benchmark_HKDF
      (Buffer    : in out Tux.Types.Byte_Array;
-      Algorithm :        Tux.Hashing.Algorithm_Kind);
+      Algorithm :        Tux.Hashing.Enabled_Algorithm_Kind);
 
    generic
       Name : String;
@@ -81,7 +81,7 @@ procedure Benchmark is
 
    procedure Benchmark_Hash
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_Kind)
+      Algorithm : Tux.Hashing.Enabled_Algorithm_Kind)
    is
       use type Support.Timing.Cycles_Count;
 
@@ -119,7 +119,7 @@ procedure Benchmark is
 
    procedure Benchmark_HMAC
      (Buffer    : Tux.Types.Byte_Array;
-      Algorithm : Tux.Hashing.Algorithm_Kind)
+      Algorithm : Tux.Hashing.Enabled_Algorithm_Kind)
    is
       use type Support.Timing.Cycles_Count;
 
@@ -160,7 +160,7 @@ procedure Benchmark is
 
    procedure Benchmark_HKDF
      (Buffer    : in out Tux.Types.Byte_Array;
-      Algorithm :        Tux.Hashing.Algorithm_Kind)
+      Algorithm :        Tux.Hashing.Enabled_Algorithm_Kind)
    is
       use type Support.Timing.Cycles_Count;
 
@@ -282,33 +282,44 @@ procedure Benchmark is
    Data_Chunk : constant Byte_Array_Access :=
      new Tux.Types.Byte_Array (1 .. Data_Size);
 
-   Lengths : constant array (1 .. 6) of Tux.Types.Byte_Count :=
-      (1, 32, 256, 1024, 8192, Data_Size);
+   Lengths : constant array (1 .. 7) of Tux.Types.Byte_Count :=
+      (1, 8, 64, 512, 4_096, 32_768, Data_Size);
 
 begin
    Data_Chunk.all := (others => 16#AA#);
 
    for Length of Lengths loop
       Ada.Text_IO.Put_Line ("----------------------------------------");
+      Ada.Text_IO.Put_Line ("Hash benchmarks");
       Ada.Text_IO.Put ("Data size =" & Tux.Types.Byte_Count'Image (Length));
       Ada.Text_IO.Put_Line (" bytes");
       Ada.Text_IO.New_Line;
 
       for Algorithm in Tux.Hashing.Algorithm_Kind loop
-         Benchmark_Hash (Data_Chunk.all (1 .. Length), Algorithm);
+         if Algorithm in Tux.Hashing.Enabled_Algorithm_Kind then
+            Benchmark_Hash (Data_Chunk.all (1 .. Length), Algorithm);
+         end if;
       end loop;
       Ada.Text_IO.New_Line;
 
       for Algorithm in Tux.Hashing.Algorithm_Kind loop
-         Benchmark_HMAC (Data_Chunk.all (1 .. Length), Algorithm);
+         if Algorithm in Tux.Hashing.Enabled_Algorithm_Kind then
+            Benchmark_HMAC (Data_Chunk.all (1 .. Length), Algorithm);
+         end if;
       end loop;
       Ada.Text_IO.New_Line;
 
       for Algorithm in Tux.Hashing.Algorithm_Kind loop
-         Benchmark_HKDF (Data_Chunk.all (1 .. Length), Algorithm);
+         if Algorithm in Tux.Hashing.Enabled_Algorithm_Kind then
+            Benchmark_HKDF (Data_Chunk.all (1 .. Length), Algorithm);
+         end if;
       end loop;
       Ada.Text_IO.New_Line;
    end loop;
+
+   Ada.Text_IO.Put_Line ("----------------------------------------");
+   Ada.Text_IO.Put_Line ("Permutation benchmarks");
+   Ada.Text_IO.New_Line;
 
    Benchmark_Keccak_1600_24;
    Benchmark_Keccak_1600_12;
