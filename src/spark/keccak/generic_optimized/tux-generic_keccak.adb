@@ -39,7 +39,7 @@ package body Tux.Generic_Keccak is
       Outer_Loop :
       for Y in Y_Coord loop
          for X in X_Coord loop
-            pragma Loop_Optimize (Ivdep);
+            pragma Loop_Optimize (No_Unroll);
 
             Offset := (Byte_Count (Y) * 5 + Byte_Count (X)) * Lane_Size_Bytes;
 
@@ -61,12 +61,6 @@ package body Tux.Generic_Keccak is
      (Ctx  :     Context;
       Data : out Byte_Array)
    is
-      --  Ignore ghost code in this procedure to preserve the Ivdep property
-      --  for Loop_Optimize (i.e. there are no loop-carried dependencies).
-
-      pragma Assertion_Policy (Ghost          => Ignore,
-                               Loop_Invariant => Ignore);
-
       Offset_G : Byte_Count := 0 with Ghost;
 
       Offset : Byte_Count;
@@ -85,7 +79,7 @@ package body Tux.Generic_Keccak is
            (Data (Data'First .. Data'First + Offset_G - 1)'Initialized);
 
          for X in X_Coord loop
-            pragma Loop_Optimize (Ivdep);
+            pragma Loop_Optimize (No_Unroll);
 
             pragma Loop_Invariant (Offset_G mod Lane_Size_Bytes = 0);
             pragma Loop_Invariant
