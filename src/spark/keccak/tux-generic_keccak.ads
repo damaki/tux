@@ -56,7 +56,7 @@ is
                           (Lane_Type'Size * 25) / Unsigned_8'Size;
    --  The size of the Keccak-f state in bytes
 
-   type Round_Count is new Positive range 12 .. 24 with
+   type Round_Count is new Positive range 2 .. 24 with
      Predicate => Round_Count mod 2 = 0;
    --  Number of Keccak rounds.
    --
@@ -103,13 +103,12 @@ is
    --  @param Ctx The Keccak-f state to read.
    --  @param Data Buffer to where the extracted bytes are written.
 
-   procedure Permute
-     (Ctx        : in out Context;
-      Num_Rounds :        Round_Count);
+   generic
+      Num_Rounds : Round_Count;
+   procedure Generic_Permute (Ctx : in out Context);
    --  Apply the Keccak permutation to the internal state.
    --
    --  @param Ctx The Keccak-f state to permute.
-   --  @param Num_Rounds The number of permutation rounds to apply.
 
    procedure Sanitize (Ctx : out Context);
    --  Sanitize the Keccak-f state to all zeroes

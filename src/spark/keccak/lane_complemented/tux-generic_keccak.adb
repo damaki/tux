@@ -41,7 +41,7 @@ package body Tux.Generic_Keccak is
      (Ctx  : in out Context;
       Data :        Byte_Array)
    is
-      Offset : Byte_Count := 0;
+      Offset : Byte_Count;
       Pos    : Index_Number;
       Lane   : Lane_Type;
 
@@ -50,16 +50,10 @@ package body Tux.Generic_Keccak is
 
       Outer_Loop :
       for Y in Y_Coord loop
-         pragma Loop_Invariant (Offset mod Lane_Size_Bytes = 0);
-         pragma Loop_Invariant (Offset <= Data'Length);
-         pragma Loop_Invariant (Offset = Byte_Count (Y) * Lane_Size_Bytes * 5);
-
          for X in X_Coord loop
-            pragma Loop_Invariant (Offset mod Lane_Size_Bytes = 0);
-            pragma Loop_Invariant (Offset <= Data'Length);
-            pragma Loop_Invariant
-              (Offset = (Byte_Count (Y) * Lane_Size_Bytes * 5) +
-                        (Byte_Count (X) * Lane_Size_Bytes));
+            pragma Loop_Optimize (No_Unroll);
+
+            Offset := (Byte_Count (Y) * 5 + Byte_Count (X)) * Lane_Size_Bytes;
 
             exit Outer_Loop when Offset >= Data'Length;
 
@@ -67,8 +61,6 @@ package body Tux.Generic_Keccak is
             Lane := To_Lane (Data (Pos .. Pos + Lane_Size_Bytes - 1));
 
             Ctx (X, Y) := Ctx (X, Y) xor Lane;
-
-            Offset := Offset + Lane_Size_Bytes;
          end loop;
       end loop Outer_Loop;
    end XOR_Bytes_Into_Context;
@@ -92,7 +84,9 @@ package body Tux.Generic_Keccak is
                others    => 0),
          4 => (others    => 0));
 
-      Offset : Byte_Count := 0;
+      Offset_G : Byte_Count := 0 with Ghost;
+
+      Offset : Byte_Count;
       Pos    : Index_Number;
 
    begin
@@ -100,20 +94,25 @@ package body Tux.Generic_Keccak is
 
       Outer_Loop :
       for Y in Y_Coord loop
-         pragma Loop_Invariant (Offset mod Lane_Size_Bytes = 0);
-         pragma Loop_Invariant (Offset = Byte_Count (Y) * Lane_Size_Bytes * 5);
-         pragma Loop_Invariant (Offset <= Data'Length);
+         pragma Loop_Invariant (Offset_G mod Lane_Size_Bytes = 0);
+         pragma Loop_Invariant (Offset_G <= Data'Length);
          pragma Loop_Invariant
-           (Data (Data'First .. Data'First + Offset - 1)'Initialized);
+           (Offset_G = Byte_Count (Y) * Lane_Size_Bytes * 5);
+         pragma Loop_Invariant
+           (Data (Data'First .. Data'First + Offset_G - 1)'Initialized);
 
          for X in X_Coord loop
-            pragma Loop_Invariant (Offset mod Lane_Size_Bytes = 0);
+            pragma Loop_Optimize (No_Unroll);
+
+            pragma Loop_Invariant (Offset_G mod Lane_Size_Bytes = 0);
             pragma Loop_Invariant
-              (Offset = (Byte_Count (Y) * Lane_Size_Bytes * 5) +
-                        (Byte_Count (X) * Lane_Size_Bytes));
-            pragma Loop_Invariant (Offset <= Data'Length);
+              (Offset_G = (Byte_Count (Y) * Lane_Size_Bytes * 5) +
+                          (Byte_Count (X) * Lane_Size_Bytes));
+            pragma Loop_Invariant (Offset_G <= Data'Length);
             pragma Loop_Invariant
-              (Data (Data'First .. Data'First + Offset - 1)'Initialized);
+              (Data (Data'First .. Data'First + Offset_G - 1)'Initialized);
+
+            Offset := (Byte_Count (Y) * 5 + Byte_Count (X)) * Lane_Size_Bytes;
 
             exit Outer_Loop when Offset >= Data'Length;
 
@@ -122,19 +121,16 @@ package body Tux.Generic_Keccak is
             To_Bytes (Ctx (X, Y) xor Complement_Mask (X, Y),
                       Data (Pos .. Pos + Lane_Size_Bytes - 1));
 
-            Offset := Offset + Lane_Size_Bytes;
+            Offset_G := Offset_G + Lane_Size_Bytes;
          end loop;
       end loop Outer_Loop;
    end Extract_Bytes;
 
-   -------------
-   -- Permute --
-   -------------
+   ---------------------
+   -- Generic_Permute --
+   ---------------------
 
-   procedure Permute
-     (Ctx        : in out Context;
-      Num_Rounds :        Round_Count)
-   is
+   procedure Generic_Permute (Ctx : in out Context) is
       type Round_Index is new Natural range 0 .. 23;
 
       Max_Rounds : constant Positive := 12 + (Lane_Size_Log * 2);
@@ -296,8 +292,7 @@ package body Tux.Generic_Keccak is
                        1 => Agu,
                        2 => Aku,
                        3 => Amu,
-                       4 => Asu)
-                );
+                       4 => Asu));
       end Copy_To_State_From_A;
 
       procedure Prepare_Theta
@@ -524,7 +519,7 @@ package body Tux.Generic_Keccak is
 
       Copy_To_State_From_A;
 
-   end Permute;
+   end Generic_Permute;
 
    --------------
    -- Sanitize --

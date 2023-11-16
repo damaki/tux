@@ -55,6 +55,8 @@ jobs:
         sha512_backend: ["Speed"]
         sha3_enabled: ["True", "False"]
         shake_enabled: ["True", "False"]
+        keccak_optimize: ["Speed"]
+        keccak_backend: ["Lane_Complemented"]
         include:
           # Test algorithms optimised for size
           - sha1_enabled: "True"
@@ -64,6 +66,28 @@ jobs:
             sha512_backend: "Size"
             sha3_enabled: "True"
             shake_enabled: "True"
+            keccak_optimize: "Size"
+            keccak_backend: "Lane_Complemented"
+          # Test Keccak generic backend (speed)
+          - sha1_enabled: "True"
+            sha256_enabled: "True"
+            sha256_backend: "Speed"
+            sha512_enabled: "True"
+            sha512_backend: "Speed"
+            sha3_enabled: "True"
+            shake_enabled: "True"
+            keccak_optimize: "Speed"
+            keccak_backend: "Generic_Optimized"
+          # Test Keccak generic backend (size)
+          - sha1_enabled: "True"
+            sha256_enabled: "True"
+            sha256_backend: "Speed"
+            sha512_enabled: "True"
+            sha512_backend: "Speed"
+            sha3_enabled: "True"
+            shake_enabled: "True"
+            keccak_optimize: "Size"
+            keccak_backend: "Generic_Optimized"
 
     runs-on: ubuntu-latest
 
@@ -95,7 +119,9 @@ jobs:
             --sha512-enabled=${{ matrix.sha512_enabled }} \
             --sha512-backend=${{ matrix.sha512_backend }} \
             --sha3-enabled=${{ matrix.sha3_enabled }} \
-            --shake-enabled=${{ matrix.shake_enabled }}
+            --shake-enabled=${{ matrix.shake_enabled }} \
+            --keccak-backend=${{ matrix.keccak_backend }} \
+            --keccak-optimize=${{ matrix.keccak_optimize }}
           cd test_crate
           alr build
 

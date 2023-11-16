@@ -49,7 +49,7 @@ package body Tux.Generic_Sponge is
             Ctx.Length := 0;
 
             XOR_Bytes_Into_Context (Ctx.Internal_State, Ctx.Buffer);
-            Permute (Ctx.Internal_State, Num_Rounds);
+            Permute (Ctx.Internal_State);
          end if;
       end if;
 
@@ -64,7 +64,7 @@ package body Tux.Generic_Sponge is
          XOR_Bytes_Into_Context
            (Ctx.Internal_State, Data (Pos .. Pos + Ctx.Rate - 1));
 
-         Permute (Ctx.Internal_State, Num_Rounds);
+         Permute (Ctx.Internal_State);
 
          Offset    := Offset    + Ctx.Rate;
          Remaining := Remaining - Ctx.Rate;
@@ -140,7 +140,7 @@ package body Tux.Generic_Sponge is
          pragma Loop_Invariant
            (Data (Data'First .. Data'First + Offset - 1)'Initialized);
 
-         Permute (Ctx.Internal_State, Num_Rounds);
+         Permute (Ctx.Internal_State);
 
          Pos := Data'First + Offset;
          Extract_Bytes (Ctx.Internal_State, Data (Pos .. Pos + Ctx.Rate - 1));
@@ -155,7 +155,7 @@ package body Tux.Generic_Sponge is
       if Remaining > 0 then
          pragma Assert (Ctx.Length = Ctx.Rate);
 
-         Permute (Ctx.Internal_State, Num_Rounds);
+         Permute (Ctx.Internal_State);
          Extract_Bytes (Ctx.Internal_State, Ctx.Buffer);
 
          Pos := Data'First + Offset;

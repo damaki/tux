@@ -48,20 +48,7 @@ generic
       Data : out Tux.Types.Byte_Array);
    --  Read bytes from the start of the permutation's internal state
 
-   type Permutation_Round_Count is range <>;
-   --  Number of rounds in the permutation function.
-   --
-   --  This is used for permutation functions that have a configurable
-   --  number of rounds. For permutations with a fixed number of rounds this
-   --  can be defined as a type with only one value in its range. For example:
-   --
-   --     type Round_Count is range 24 .. 24;
-
-   Num_Rounds : Permutation_Round_Count;
-
-   with procedure Permute
-     (Ctx        : in out Permutation_Context;
-      Num_Rounds :        Permutation_Round_Count);
+   with procedure Permute (Ctx : in out Permutation_Context);
    --  Permute the internal state
 
    with procedure Pad_With_Suffix
